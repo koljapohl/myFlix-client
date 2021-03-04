@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 import { MainView } from './components/main-view/main-view';
 
 //Import statement to indicate that './index.scss' needs to be bundled
-import '../node_modules/normalize.css/normalize.css';
+//import '../node_modules/normalize.css/normalize.css';
 import './index.scss';
 
 class MyFlixApplication extends React.Component {

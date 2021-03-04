@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap';
+import { Card } from 'react-bootstrap/';
 
 import './movie-card.scss';
 
@@ -11,13 +8,20 @@ export class MovieCard extends React.Component {
   render() {
     // this is given to MovieCard component by the outer world (MainView)
     const { movie, onClick } = this.props;
+    let description = movie.Description.slice( 0, 150 ) + '[...]';
     return (
-      <Card>
-        <Card.Img variant="top" src={movie.ImagePath} />
+      <Card border="primary" className="mx-auto" >
+        <Card.Header>
+          <Card.Img
+            onClick={() => onClick( movie )}
+            variant="top"
+            src={movie.ImagePath}
+            className="img-button"
+          />
+        </Card.Header>
         <Card.Body>
           <Card.Title>{movie.Title}</Card.Title>
-          <Card.Text>{movie.Description}</Card.Text>
-          <Button variant="secondary" onClick={() => onClick( movie )}>Open</Button>
+          <Card.Text className="description">{description}</Card.Text>
         </Card.Body>
       </Card>
     );

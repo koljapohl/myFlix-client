@@ -1,3 +1,9 @@
-.card {
-  max-width: 200px;
+@import '../../design';
+
+.img-button:hover {
+ cursor: pointer;
+}
+
+.description {
+  font-size: 0.8rem;
 }

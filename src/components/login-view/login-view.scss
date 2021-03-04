@@ -1,2 +1,11 @@
 @import '../../design';
 
+@media (min-width: 576px) {
+  .form-label {
+    text-align: end;
+  }
+}
+
+.form-control {
+  min-width: 100px;
+}

@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/Button';
+import { Container, Navbar, Nav, Row, Col, Button } from 'react-bootstrap/';
 
+import arrow from '../../../public/img/arrow.svg';
 import './movie-view.scss';
 
 export class MovieView extends React.Component {
@@ -17,26 +18,49 @@ export class MovieView extends React.Component {
     if ( !movie ) return null;
 
     return (
-      <div className="movie-view">
-        <img className="movie-poster" src={movie.ImagePath} />
-        <div className="movie-title">
-          <span className="label">Title: </span>
-          <span className="value">{movie.Title}</span>
-        </div>
-        <div className="movie-description">
-          <span className="label">Description: </span>
-          <span className="value">{movie.Description}</span>
-        </div>
-        <div className="movie-genre">
-          <span className="label">Genre: </span>
-          <span className="value">{movie.Genre.Title}</span>
-        </div>
-        <div className="movie-director">
-          <span className="label">Director: </span>
-          <span className="value">{movie.Director.Name}</span>
-        </div>
-        <Button variant="primary" type="button" onClick={() => onClick()}>Overview</Button>
-      </div>
+      <Container>
+        <Navbar className="px-0 mb-4">
+          <Button
+            className="btn-back"
+            variant="link"
+            type="button"
+            onClick={() => onClick()}>
+            <img className="arrow" src={arrow} alt="back icon" />
+          </Button>
+          <Navbar.Brand>
+            <h1 className="brand my-auto">{movie.Title}
+              <Button variant="link" type="button">Star</Button></h1>
+          </Navbar.Brand>
+          <Nav className="ml-auto">
+            <Nav.Link className="nav-item__last" href="#">
+              <Button
+                variant="primary"
+                type="button"
+                className="btn-profile btn-last">
+                Profile <em>handler!!</em>
+              </Button>
+            </Nav.Link>
+          </Nav>
+        </Navbar>
+        <Row className="content-body">
+          <Col className="content-text" md={8}>
+            <Row className="align-items-center">
+              <Col xs="auto"><p>Genre:</p></Col>
+              <Col><a href="#" alt="link to genre"><p>{movie.Genre.Title}</p></a></Col>
+            </Row>
+            <Row className="align-items-center mb-4">
+              <Col xs="auto"><p>Director:</p></Col>
+              <Col><a href="#" alt="link to director"><p>{movie.Director.Name}</p></a></Col>
+            </Row>
+            <Row className="description">
+              <Col>
+                <h4>Description</h4>{movie.Description}
+              </Col>
+            </Row>
+          </Col>
+          <Col><img className="movie-poster" src={movie.ImagePath} /></Col>
+        </Row>
+      </Container>
     );
   }
 }

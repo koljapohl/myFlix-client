@@ -1,6 +1,24 @@
 @import '../../design';
 
-.movie-view img {
-  max-width: 100%;
+.btn-back {
+  padding: 0 0 0.3rem 0!important;
+  margin-left: -2.6rem!important;
+}
+.nav-item__last {
+  padding-right: 0px !important;
+}
+.arrow {
+  transform: rotate(90deg);
+  width: 2.5rem;
+  height: auto;
+}
+.content-body {
+  flex-wrap: nowrap;
+}
+.content-text {
+  font-weight: 400;
+}
+.movie-poster {
+  width: 100%;
   height: auto;
 }

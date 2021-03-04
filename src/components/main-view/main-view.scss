@@ -5,12 +5,9 @@
 .main-view {
   font-family: 'Montserrat', 'Source Sans Pro', sans-serif;
 }
-
-.movie-card {
-  border: 2px solid $primary-color;
-  background-color: $secondary-color;
-  transition: all 0.2s ease-out;
+.brand {
+  font-size: 1.7rem !important;
 }
-.movie-card:hover {
-  opacity: 0.7;
+.buttons {
+  margin-left: auto;
 }

@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
   "dependencies": {
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",

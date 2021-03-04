@@ -42,5 +42,11 @@ app will be run on: `localhost:1234`
 
 + React
 + ReactDOM
++ React-Bootstrap
++ Axios
++ PropTypes
+
+### dev-Dependencies
+
 + Babel
 + Sass
