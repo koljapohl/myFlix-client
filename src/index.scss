@@ -1,5 +1,7 @@
-$color: steelblue;
+@import './design';
 
-.my-flix {
-  color: $color;
+#app-container {
+  color: $text-color;
+  background-color: $background-color;
+  padding: 10px;
 }
