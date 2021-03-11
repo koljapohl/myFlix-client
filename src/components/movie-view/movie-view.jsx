@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Navbar, Nav, Row, Col, Button } from 'react-bootstrap/';
+import { Link } from 'react-router-dom';
 
 import arrow from '../../../public/img/arrow.svg';
 import './movie-view.scss';
@@ -13,20 +14,20 @@ export class MovieView extends React.Component {
   }
 
   render() {
-    const { movie, onClick } = this.props;
+    const { movie } = this.props;
 
     if ( !movie ) return null;
 
     return (
       <Container>
         <Navbar className="px-0 mb-4">
-          <Button
-            className="btn-back"
-            variant="link"
-            type="button"
-            onClick={() => onClick()}>
+          <Link to={"/"}>
+            <Button
+              className="btn-back"
+              variant="link"
+              type="button" />
             <img className="arrow" src={arrow} alt="back icon" />
-          </Button>
+          </Link>
           <Navbar.Brand>
             <h1 className="brand my-auto">{movie.Title}
               <Button variant="link" type="button">Star</Button></h1>
@@ -60,7 +61,7 @@ export class MovieView extends React.Component {
           </Col>
           <Col><img className="movie-poster" src={movie.ImagePath} /></Col>
         </Row>
-      </Container>
+      </Container >
     );
   }
 }
@@ -82,5 +83,4 @@ MovieView.propTypes = {
     Featured: PropTypes.bool,
     _id: PropTypes.string,
   } ).isRequired,
-  onClick: PropTypes.func.isRequired
 }

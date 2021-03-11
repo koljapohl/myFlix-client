@@ -27,30 +27,36 @@ export function LoginView( props ) {
         props.onLoggedIn( data );
       } )
       .catch( e => {
-        console.log( 'no such user' );
+        console.error( 'no such user' );
       } );
   };
 
   /* switches to registration form for new users */
-  const handleRegistration = ( e ) => {
+  const swapView = ( e ) => {
     e.preventDefault();
-    props.onRegistration( true );
-  };
+    window.open( `/register`, "_self" );
+  }
 
   return (
     <React.Fragment>
       <Row md={2} className="justify-content-center">
         <Col>
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <Form.Group as={Row} controlId="formUsername">
               <Form.Label column sm={2} md={3}>Username</Form.Label>
               <Col>
                 <Form.Control
                   type="text"
+                  placeholder="Username"
+                  name='username'
                   value={username}
-                  placeholder="Enter username"
+                  required
                   onChange={e => setUsername( e.target.value )}
+                  pattern='[a-zA-Z\d]{5,}'
                 />
+                <Form.Control.Feedback type="invalid">
+                  A Username is required and must at least contain 5 characters.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="formPassword">
@@ -59,9 +65,14 @@ export function LoginView( props ) {
                 <Form.Control
                   type="password"
                   value={password}
-                  placeholder="Enter password"
+                  placeholder="Password"
+                  name="password"
+                  required
                   onChange={e => setPassword( e.target.value )}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Password is required.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Row className="my-4">
@@ -70,24 +81,21 @@ export function LoginView( props ) {
                   block
                   variant="primary"
                   type="submit"
-                  onClick={handleSubmit}>
-                  Log In
-              </Button>
+                >Log In</Button>
               </Col>
             </Row>
             <Form.Row size="lg" className="my-2">
               <Form.Label className="pl-1 m-0">New to myFlix?</Form.Label>
-              <Button className="py-0" variant="link" type="link" onClick={handleRegistration}>
+              <Button className="py-0" variant="link" type="link" onClick={swapView}>
                 Sign up here</Button>
             </Form.Row>
           </Form>
         </Col>
       </Row>
-    </React.Fragment>
+    </React.Fragment >
   );
 }
 
 LoginView.propTypes = {
   onLoggedIn: PropTypes.func.isRequired,
-  onRegistration: PropTypes.func.isRequired
 };

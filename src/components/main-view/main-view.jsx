@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Navbar, Nav, Button, Container } from 'react-bootstrap/';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import { RegistrationView } from '../registration-view/registration-view';
 import { LoginView } from '../login-view/login-view';
@@ -16,9 +17,7 @@ export class MainView extends React.Component {
     // Inital state is set to null
     this.state = {
       movies: null,
-      selectedMovie: null,
-      user: null,
-      newUser: false
+      user: null
     };
   }
 
@@ -30,14 +29,6 @@ export class MainView extends React.Component {
       } );
       this.getMovies( accessToken );
     }
-  }
-
-  /*When a movie is clicked, this updates the state of `selectedMovie` 
-  property to that clicked on movie*/
-  onMovieClick( movie ) {
-    this.setState( {
-      selectedMovie: movie
-    } );
   }
 
   /*When a user successfully logs in, this updates the `user` property in state to
@@ -74,62 +65,28 @@ export class MainView extends React.Component {
         console.log( error );
       } );
   }
-  /*This toggles whether Registration Form is displayed or not - otherwise Login will be shown*/
-  onRegistration( regis ) {
-    this.setState( {
-      newUser: regis
-    } );
-  }
 
   render() {
-    const { movies, selectedMovie, user, newUser } = this.state;
+    const { movies, user } = this.state;
 
     /* If there is no user, the LoginView is rendered. If there is a logged in user,
     the user details are *passed as a prop to the LoginView**/
-
-    if ( !user && !newUser ) return (
-      <Row className="justify-content-center">
-        <Col className="px-5">
-          <Navbar className="mb-5 mt-3">
-            <Navbar.Brand className="brand">Log in to myFlix</Navbar.Brand>
-          </Navbar>
-          <LoginView onRegistration={( regis ) => this.onRegistration( regis )}
-            onLoggedIn={user => this.onLoggedIn( user )} />
-        </Col>
-      </Row>
-    );
-
-    if ( newUser ) return (
-      <Row className="justify-content-center">
-        <Col className="px-5">
-          <Navbar className="mb-5 mt-3">
-            <Navbar.Brand className="brand">Register for myFlix</Navbar.Brand>
-          </Navbar>
-          <RegistrationView onRegistration={( regis ) => this.onRegistration( regis )}
-            onLoggedIn={user => this.onLoggedIn( user )} />
-        </Col>
-      </Row>
-
-    )
-
-    // before movies have been loaded
-    if ( !movies ) return <div className="main-view" />;
-
     return (
-      // single MovieView
-      <Row className="main-view justify-content-center my-4">
-        {selectedMovie
-          ?
-          (
-            <React.Fragment>
-              <Row className="px-5">
-                <MovieView onClick={() => this.onMovieClick( null )}
-                  movie={selectedMovie} />
-              </Row>
-            </React.Fragment>
-          )
-          //MainView
-          : (
+
+      <Router>
+        <Route exact path={["/", "/login"]} render={() => {
+          if ( !user ) return (
+            <Row className="justify-content-center">
+              <Col className="px-5">
+                <Navbar className="mb-5 mt-3">
+                  <Navbar.Brand className="brand">Log in to myFlix</Navbar.Brand>
+                </Navbar>
+                <LoginView onLoggedIn={user => this.onLoggedIn( user )} />
+              </Col>
+            </Row>
+          );
+          if ( !movies ) return ( <div className="main-view" /> );
+          return (
             <Container fluid>
               <Navbar className="px-5 py-0 mb-2">
                 <Navbar.Brand className="brand" href="#home">myFlix</Navbar.Brand>
@@ -170,15 +127,35 @@ export class MainView extends React.Component {
                     <MovieCard
                       key={movie._id}
                       movie={movie}
-                      onClick={( movie ) => this.onMovieClick( movie )}
                     />
                   </Col>
                 ) )}
               </Row>
             </Container>
           )
+        }} />
+
+        <Route exact path="/register" render={() => {
+          return ( <Row className="justify-content-center">
+            <Col className="px-5">
+              <RegistrationView />
+            </Col>
+          </Row>
+          )
+        }} />
+
+
+        <Route path="/movies/:movieId" render={( { match } ) => {
+          return (
+            <React.Fragment>
+              <Row className="main-view justify-content-center px-5 my-4">
+                <MovieView movie={movies.find( m => m._id === match.params.movieId )} />
+              </Row>
+            </React.Fragment>
+          )
         }
-      </Row>
+        } />
+      </Router >
     );
   }
 }
