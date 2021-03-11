@@ -7,6 +7,7 @@ import { LoginView } from '../login-view/login-view';
 import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
 
+import logout from '../../../public/img/log-out.svg'
 import './main-view.scss';
 
 export class MainView extends React.Component {
@@ -22,16 +23,13 @@ export class MainView extends React.Component {
   }
 
   componentDidMount() {
-    //https://myflix-kp.herokuapp.com
-    axios.get( 'https://myflix-kp.herokuapp.com/movies' )
-      .then( ( response ) => {
-        this.setState( {
-          movies: response.data
-        } );
-      } )
-      .catch( function ( error ) {
-        console.log( error );
+    let accessToken = localStorage.getItem( 'token' );
+    if ( accessToken !== null ) {
+      this.setState( {
+        user: localStorage.getItem( 'user' )
       } );
+      this.getMovies( accessToken );
+    }
   }
 
   /*When a movie is clicked, this updates the state of `selectedMovie` 
@@ -44,13 +42,39 @@ export class MainView extends React.Component {
 
   /*When a user successfully logs in, this updates the `user` property in state to
   that *particular user**/
-
-  onLoggedIn( user ) {
+  onLoggedIn( authData ) {
+    console.log( authData );
     this.setState( {
-      user
+      user: authData.user.Username
+    } );
+    localStorage.setItem( 'token', authData.token );
+    localStorage.setItem( 'user', authData.user.Username );
+    this.getMovies( authData.token );
+  }
+
+  //when user logs out its localStorage keys will be deleted
+  onLogout() {
+    localStorage.removeItem( 'token' );
+    localStorage.removeItem( 'user' );
+    this.setState( {
+      user: null
     } );
   }
 
+  getMovies( token ) {
+    axios.get( 'https://myflix-kp.herokuapp.com/movies', {
+      headers: { Authorization: `Bearer ${token}` }
+    } )
+      .then( response => {
+        this.setState( {
+          movies: response.data
+        } );
+      } )
+      .catch( function ( error ) {
+        console.log( error );
+      } );
+  }
+  /*This toggles whether Registration Form is displayed or not - otherwise Login will be shown*/
   onRegistration( regis ) {
     this.setState( {
       newUser: regis
@@ -92,6 +116,7 @@ export class MainView extends React.Component {
     if ( !movies ) return <div className="main-view" />;
 
     return (
+      // single MovieView
       <Row className="main-view justify-content-center my-4">
         {selectedMovie
           ?
@@ -103,18 +128,18 @@ export class MainView extends React.Component {
               </Row>
             </React.Fragment>
           )
+          //MainView
           : (
             <Container fluid>
               <Navbar className="px-5 py-0 mb-2">
                 <Navbar.Brand className="brand" href="#home">myFlix</Navbar.Brand>
                 <Nav className="buttons">
-                  <Nav.Link>
-                    <Button
-                      type="button"
-                      variant="primary">
-                      Profile
-                    </Button>
-                  </Nav.Link>
+                  <Button className="btn-logout"
+                    variant="link"
+                    type="button"
+                    onClick={() => this.onLogout()}>
+                    <img className="logout" src={logout} alt="logout icon" />
+                  </Button>
                 </Nav>
               </Navbar>
               <Row className="px-5 my-4">
@@ -131,10 +156,17 @@ export class MainView extends React.Component {
                     Sort
                   </Button>
                 </Col>
+                <Col className="btn-profile_wrapper">
+                  <Button
+                    type="button"
+                    variant="primary"
+                  >
+                    Profile</Button>
+                </Col>
               </Row>
               <Row className="px-5 py-3">
                 {movies.map( movie => (
-                  <Col className="pb-3" key={movie._id} xs={6} sm={4} md={3}>
+                  <Col className="pb-3" key={movie._id} xs={12} sm={6} md={4} lg={3} xl={2}>
                     <MovieCard
                       key={movie._id}
                       movie={movie}

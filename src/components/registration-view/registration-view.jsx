@@ -5,16 +5,17 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 import './registration-view.scss';
 
 export function RegistrationView( props ) {
-  const [username, setUsername] = useState( ' ' );
-  const [password, setPassword] = useState( ' ' );
-  const [email, setEmail] = useState( ' ' );
-  const [birth, setBirth] = useState( ' ' );
+  const [username, setUsername] = useState( '' );
+  const [password, setPassword] = useState( '' );
+  const [email, setEmail] = useState( '' );
+  const [birth, setBirth] = useState( '' );
 
   //Implement form-validation at a later point!!
 
   /* handles successful registration*/
   const handleRegistration = ( e ) => {
     e.preventDefault();
+
     /* logs in the newly registered user*/
     props.onLoggedIn( username );
     /* end registration process */

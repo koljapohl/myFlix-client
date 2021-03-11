@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row, Form, Button } from 'react-bootstrap/';
+import axios from 'axios';
 
 import './login-view.scss';
 
@@ -12,7 +13,22 @@ export function LoginView( props ) {
     e.preventDefault();
     console.log( username, password );
     /* send request to the server for authentication */
-    props.onLoggedIn( username );
+    /*http://localhost:8080/login*/
+    /*https://myflix-kp.herokuapp.com/login*/
+    axios.post( 'https://myflix-kp.herokuapp.com/login', {},
+      {
+        params: {
+          Username: username,
+          Password: password
+        }
+      } )
+      .then( response => {
+        const data = response.data;
+        props.onLoggedIn( data );
+      } )
+      .catch( e => {
+        console.log( 'no such user' );
+      } );
   };
 
   /* switches to registration form for new users */
@@ -32,6 +48,7 @@ export function LoginView( props ) {
                 <Form.Control
                   type="text"
                   value={username}
+                  placeholder="Enter username"
                   onChange={e => setUsername( e.target.value )}
                 />
               </Col>
@@ -42,6 +59,7 @@ export function LoginView( props ) {
                 <Form.Control
                   type="password"
                   value={password}
+                  placeholder="Enter password"
                   onChange={e => setPassword( e.target.value )}
                 />
               </Col>
