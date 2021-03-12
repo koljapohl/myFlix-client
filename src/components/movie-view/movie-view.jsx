@@ -23,12 +23,14 @@ export class MovieView extends React.Component {
       <React.Fragment>
         <Navbar sticky="top" className="px-5 py-0 mb-2">
           <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
-          <Nav className="ml-auto">
-            <Button
-              type="button"
-              variant="primary">
-              Profile
+          <Nav className="ml-auto button-wrapper">
+            <Link to={'/users/me'}>
+              <Button
+                type="button"
+                variant="primary">
+                Profile
             </Button>
+            </Link>
             <Button className="btn-logout"
               variant="link"
               type="button"
@@ -50,13 +52,17 @@ export class MovieView extends React.Component {
         </Row>
         <Row className="px-5 content-body">
           <Col className="content-text" md={8}>
-            <Row className="align-items-center">
-              <Col xs="auto"><p>Genre:</p></Col>
-              <Col><a href="#" alt="link to genre"><p>{movie.Genre.Title}</p></a></Col>
+            <Row className="align-items-center mb-2">
+              <Col xs="auto">Genre:</Col>
+              <Link to={`/genres/${movie.Genre.Title}`} className="px-0">
+                {movie.Genre.Title}
+              </Link>
             </Row>
             <Row className="align-items-center mb-4">
-              <Col xs="auto"><p>Director:</p></Col>
-              <Col><a href="#" alt="link to director"><p>{movie.Director.Name}</p></a></Col>
+              <Col xs="auto">Director:</Col>
+              <Link to={`/directors/${movie.Director.Name}`} >
+                {movie.Director.Name}
+              </Link>
             </Row>
             <Row className="description">
               <Col>

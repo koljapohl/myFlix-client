@@ -1,12 +1,15 @@
 import React from 'react';
 import axios from 'axios';
-import { Row, Col, Navbar, Nav, Button, Form, Container } from 'react-bootstrap/';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Row, Col, Navbar, Nav, Button, Form } from 'react-bootstrap/';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import { RegistrationView } from '../registration-view/registration-view';
 import { LoginView } from '../login-view/login-view';
 import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
+import { GenreView } from '../genre-view/genre-view';
+import { DirectorView } from '../director-view/director-view';
+import { ProfileView } from '../profile-view/profile-view';
 
 import logout from '../../../public/img/log-out.svg'
 import './main-view.scss';
@@ -86,12 +89,14 @@ export class MainView extends React.Component {
                   <Form.Control type="text" placeholder="Search" className="mr-sm-2" />
                   <Button variant="outline-primary">Search</Button>
                 </Form>
-                <Nav className="ml-auto">
-                  <Button
-                    type="button"
-                    variant="primary">
-                    Profile
+                <Nav className="ml-auto button-wrapper">
+                  <Link to={'/users/me'}>
+                    <Button
+                      type="button"
+                      variant="primary">
+                      Profile
                   </Button>
+                  </Link>
                   <Button className="btn-logout"
                     variant="link"
                     type="button"
@@ -131,6 +136,19 @@ export class MainView extends React.Component {
           return <MovieView onClick={() => this.onLogout()} movie={movies.find( m => m._id === match.params.movieId )} />;
         }
         } />
+
+        <Route path="/genres/:title" render={( { match } ) => {
+          return <GenreView onClick={() => this.onLogout()} genre={movies.find( g => g.Genre.Title === match.params.title ).Genre} movies={movies} />;
+        }
+        } />
+
+        <Route path="/directors/:name" render={( { match } ) => {
+          return <DirectorView onClick={() => this.onLogout()} movie={movies.find( d => d.Director.Name === match.params.name )} movies={movies} />;
+        }} />
+
+        <Route path="/users/me" render={( { match } ) => {
+          return <ProfileView movies={movies} />
+        }} />
       </Router >
     );
   }
