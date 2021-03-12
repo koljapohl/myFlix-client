@@ -1,11 +1,11 @@
 @import '../../design';
 
-.btn-back {
-  padding: 0 0 0.3rem 0!important;
-  margin-left: -2.6rem!important;
+.navbar{
+  background-color: $background-color;
 }
-.nav-item__last {
-  padding-right: 0px !important;
+.btn-back {
+  vertical-align: sub;
+  margin-left: -10px;
 }
 .arrow {
   transform: rotate(90deg);

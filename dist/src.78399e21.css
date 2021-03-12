@@ -39736,13 +39736,13 @@ h3 {
     border-color: #dee2e6;
   }
 }
-.btn-back {
-  padding: 0 0 0.3rem 0 !important;
-  margin-left: -2.6rem !important;
+.navbar {
+  background-color: #e8e9e8;
 }
 
-.nav-item__last {
-  padding-right: 0px !important;
+.btn-back {
+  vertical-align: sub;
+  margin-left: -10px;
 }
 
 .arrow {
@@ -49697,6 +49697,10 @@ h3 {
 }
 .main-view {
   font-family: "Montserrat", "Source Sans Pro", sans-serif;
+}
+
+.navbar {
+  background-color: #e8e9e8;
 }
 
 .brand {
