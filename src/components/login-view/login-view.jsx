@@ -6,15 +6,15 @@ import axios from 'axios';
 import './login-view.scss';
 
 export function LoginView( props ) {
-  const [username, setUsername] = useState( '' );
+  //if a user just registered, he'll be send to login for entering password so myFlix will obtain its jwt properly,
+  //therefore its username will be displayed inside corresponding input field
+  const [username, setUsername] = useState( localStorage.getItem( 'username' ) ? localStorage.getItem( 'username' ) : '' );
   const [password, setPassword] = useState( '' );
 
   const handleSubmit = ( e ) => {
     e.preventDefault();
     console.log( username, password );
     /* send request to the server for authentication */
-    /*http://localhost:8080/login*/
-    /*https://myflix-kp.herokuapp.com/login*/
     axios.post( 'https://myflix-kp.herokuapp.com/login', {},
       {
         params: {

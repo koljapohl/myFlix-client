@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Form, Row, Col, Button, Navbar } from 'react-bootstrap';
+import { Form, Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 import './registration-view.scss';
@@ -23,6 +22,7 @@ export function RegistrationView( props ) {
       .then( response => {
         const data = response.data;
         console.log( data );
+        props.onRegistration( username );
         window.open( '/', '_self' );
       } )
       .catch( e => {
@@ -34,7 +34,7 @@ export function RegistrationView( props ) {
   /* handle an abortion of registration process*/
   const swapView = ( e ) => {
     e.preventDefault();
-    window.open( '/login', '_self' );
+    window.open( '/', '_self' );
   }
 
   return (

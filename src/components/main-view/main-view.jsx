@@ -20,7 +20,13 @@ export class MainView extends React.Component {
     // Inital state is set to null
     this.state = {
       movies: [],
-      user: null
+      user: {
+        username: null,
+        password: null,
+        email: null,
+        dob: null,
+        favoriteMovies: []
+      }
     };
   }
 
@@ -28,7 +34,13 @@ export class MainView extends React.Component {
     let accessToken = localStorage.getItem( 'token' );
     if ( accessToken !== null ) {
       this.setState( {
-        user: localStorage.getItem( 'user' )
+        user: {
+          username: localStorage.getItem( 'username' ),
+          password: localStorage.getItem( 'password' ),
+          email: localStorage.getItem( 'email' ),
+          dob: localStorage.getItem( 'dob' ),
+          favoriteMovies: localStorage.getItem( 'favoriteMovies' )
+        }
       } );
       this.getMovies( accessToken );
     }
@@ -39,22 +51,64 @@ export class MainView extends React.Component {
   onLoggedIn( authData ) {
     console.log( authData );
     this.setState( {
-      user: authData.user.Username
+      user: {
+        username: authData.user.Username,
+        password: authData.user.Password,
+        email: authData.user.Email,
+        dob: authData.user.Birthday,
+        favoriteMovies: authData.user.FavoriteMovies
+      }
     } );
+
+    localStorage.setItem( 'favoriteMovies', JSON.stringify( authData.user.FavoriteMovies ) );
     localStorage.setItem( 'token', authData.token );
-    localStorage.setItem( 'user', authData.user.Username );
+    localStorage.setItem( 'username', authData.user.Username );
+    localStorage.setItem( 'password', authData.user.Password );
+    localStorage.setItem( 'email', authData.user.Email );
+    localStorage.setItem( 'dob', authData.user.Birthday );
     this.getMovies( authData.token );
   }
 
   //when user logs out its localStorage keys will be deleted
   onLogout() {
-    localStorage.removeItem( 'token' );
-    localStorage.removeItem( 'user' );
+    localStorage.clear();
     this.setState( {
-      user: null
+      user: {
+        username: null
+      }
     } );
     window.open( '/', '_self' );
   }
+
+  onRegistration( uname ) {
+    this.setState( {
+      user: {
+        username: uname
+      }
+    } );
+    localStorage.setItem( 'username', uname );
+  }
+
+  onUpdate( data ) {
+    this.setState( {
+      user: {
+        username: data.Username,
+        password: data.Password,
+        email: data.Email,
+        dob: data.Birthday,
+        favoriteMovies: data.FavoriteMovies
+      }
+    } );
+    console.log( 'User: ' + this.state.user.username );
+    console.log( 'PW: ' + this.state.user.password );
+
+    localStorage.setItem( 'favoriteMovies', JSON.stringify( this.state.user.favoriteMovies ) );
+    localStorage.setItem( 'username', this.state.user.username );
+    localStorage.setItem( 'password', this.state.user.password );
+    localStorage.setItem( 'email', this.state.user.email );
+    localStorage.setItem( 'dob', this.state.user.dob );
+    //window.open( '/users/me', '_self' );
+  };
 
   getMovies( token ) {
     axios.get( 'https://myflix-kp.herokuapp.com/movies', {
@@ -78,7 +132,7 @@ export class MainView extends React.Component {
     return (
       <Router>
         <Route exact path={["/", "/login"]} render={() => {
-          if ( !user ) return (
+          if ( !user.username ) return (
             <LoginView onLoggedIn={data => this.onLoggedIn( data )} />
           );
           return (
@@ -129,7 +183,7 @@ export class MainView extends React.Component {
         }} />
 
         <Route exact path="/register" render={() => {
-          return <RegistrationView />;
+          return <RegistrationView onRegistration={( username ) => this.onRegistration( username )} />;
         }} />
 
         <Route path="/movies/:movieId" render={( { match } ) => {
@@ -147,7 +201,14 @@ export class MainView extends React.Component {
         }} />
 
         <Route path="/users/me" render={( { match } ) => {
-          return <ProfileView movies={movies} />
+          return <ProfileView
+            onLogout={() => this.onLogout()}
+            onUpdate={( data ) => this.onUpdate( data )}
+            movies={movies}
+            username={this.state.user.username}
+            password={this.state.user.password}
+            email={this.state.user.email}
+            dob={this.state.user.dob} />
         }} />
       </Router >
     );
