@@ -51215,6 +51215,16 @@ function LoginView(props) {
       password = _useState4[0],
       setPassword = _useState4[1];
 
+  var _useState5 = (0, _react.useState)('password'),
+      _useState6 = _slicedToArray(_useState5, 2),
+      type = _useState6[0],
+      setType = _useState6[1];
+
+  var _useState7 = (0, _react.useState)('Show'),
+      _useState8 = _slicedToArray(_useState7, 2),
+      word = _useState8[0],
+      setWord = _useState8[1];
+
   var handleSubmit = function handleSubmit(e) {
     e.preventDefault();
     console.log(username, password);
@@ -51238,6 +51248,15 @@ function LoginView(props) {
   var swapView = function swapView(e) {
     e.preventDefault();
     window.open("/register", "_self");
+  };
+
+  var changeState = function changeState() {
+    var oldState = type;
+    var isTextOrHide = oldState === 'password';
+    var newState = isTextOrHide ? 'text' : 'password';
+    var newWord = isTextOrHide ? 'Hide' : 'Show';
+    setType(newState);
+    setWord(newWord);
   };
 
   return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, {
@@ -51281,7 +51300,7 @@ function LoginView(props) {
     sm: 2,
     md: 3
   }, "Password"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
-    type: "password",
+    type: type,
     value: password,
     placeholder: "Password",
     name: "password",
@@ -51290,7 +51309,10 @@ function LoginView(props) {
     onChange: function onChange(e) {
       return setPassword(e.target.value);
     }
-  }), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
+  }), _react.default.createElement("span", {
+    className: "password-trigger",
+    onClick: changeState
+  }, word), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
     type: "invalid"
   }, "Password is required."))), _react.default.createElement(_reactBootstrap.Row, {
     className: "my-4"

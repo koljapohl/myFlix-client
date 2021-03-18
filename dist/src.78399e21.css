@@ -19869,6 +19869,16 @@ h3 {
 .form-control-login {
   min-width: 100px;
 }
+
+.password-trigger {
+  position: absolute;
+  top: 15%;
+  right: 2rem;
+  color: #000;
+  z-index: 9999;
+  user-select: none;
+  cursor: pointer;
+}
 @charset "UTF-8";
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)

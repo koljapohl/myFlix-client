@@ -10,6 +10,8 @@ export function LoginView( props ) {
   //therefore its username will be displayed inside corresponding input field
   const [username, setUsername] = useState( localStorage.getItem( 'username' ) ? localStorage.getItem( 'username' ) : '' );
   const [password, setPassword] = useState( '' );
+  const [type, setType] = useState( 'password' );
+  const [word, setWord] = useState( 'Show' );
 
   const handleSubmit = ( e ) => {
     e.preventDefault();
@@ -35,6 +37,15 @@ export function LoginView( props ) {
   const swapView = ( e ) => {
     e.preventDefault();
     window.open( `/register`, "_self" );
+  }
+
+  const changeState = () => {
+    var oldState = type;
+    var isTextOrHide = ( oldState === 'password' );
+    var newState = ( isTextOrHide ) ? 'text' : 'password';
+    var newWord = ( isTextOrHide ) ? 'Hide' : 'Show';
+    setType( newState );
+    setWord( newWord );
   }
 
   return (
@@ -67,7 +78,7 @@ export function LoginView( props ) {
                   <Form.Label className="form-label-login" column sm={2} md={3}>Password</Form.Label>
                   <Col>
                     <Form.Control
-                      type="password"
+                      type={type}
                       value={password}
                       placeholder="Password"
                       name="password"
@@ -75,6 +86,7 @@ export function LoginView( props ) {
                       className="form-control-login"
                       onChange={e => setPassword( e.target.value )}
                     />
+                    <span className="password-trigger" onClick={changeState}>{word}</span>
                     <Form.Control.Feedback type="invalid">
                       Password is required.
                 </Form.Control.Feedback>
