@@ -51089,6 +51089,7 @@ function RegistrationView(props) {
     placeholder: "Username",
     name: "username",
     value: username,
+    min: "5",
     required: true,
     onChange: function onChange(e) {
       return setUsername(e.target.value);
@@ -51096,7 +51097,7 @@ function RegistrationView(props) {
     pattern: "[a-zA-Z\\d]{5,}"
   }), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
     type: "invalid"
-  }, "A Username is required and must at least contain 5 characters."))), _react.default.createElement(_reactBootstrap.Form.Group, {
+  }, "A username is required and must at least contain 5 characters."))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formPassword"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
@@ -51112,7 +51113,9 @@ function RegistrationView(props) {
     onChange: function onChange(e) {
       return setPassword(e.target.value);
     }
-  }))), _react.default.createElement(_reactBootstrap.Form.Group, {
+  }), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
+    type: "invalid"
+  }, "A password is required."))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formEmail"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
@@ -52085,15 +52088,17 @@ function ProfileView(props) {
     var user = localStorage.getItem('username');
     var token = localStorage.getItem('token');
 
-    _axios.default.delete("https://myflix-kp.herokuapp.com/users/".concat(user), {
-      headers: {
-        Authorization: "Bearer ".concat(token)
-      }
-    }).then(function (response) {
-      localStorage.clear();
-      alert("We're sorry you're leaving ".concat(user, "."));
-      window.open('/', '_self');
-    });
+    if (confirm('Are you sure you want to delete your account?')) {
+      _axios.default.delete("https://myflix-kp.herokuapp.com/users/".concat(user), {
+        headers: {
+          Authorization: "Bearer ".concat(token)
+        }
+      }).then(function (response) {
+        localStorage.clear();
+        alert("We're sorry you're leaving ".concat(user, "."));
+        window.open('/', '_self');
+      });
+    }
   };
 
   var handleUnfav = function handleUnfav(mId) {
@@ -52265,14 +52270,15 @@ function ProfileView(props) {
     variant: "danger",
     type: "button",
     onClick: onUnregister
-  }, "UNREGISTER!"))), _react.default.createElement(_reactBootstrap.Row, {
-    lg: 2,
-    className: "favorite-movies"
-  }, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement("h4", {
+  }, "UNREGISTER!"))), _react.default.createElement("h4", {
     className: "mb-4"
-  }, "Favorite Movies"), _react.default.createElement(_reactBootstrap.CardDeck, null, favoriteMovieList.map(function (movie) {
-    return _react.default.createElement(_reactBootstrap.Card, {
+  }, "Favorite Movies"), _react.default.createElement(_reactBootstrap.Row, {
+    className: "favorite-movies"
+  }, favoriteMovieList.map(function (movie) {
+    return _react.default.createElement(_reactBootstrap.Col, {
       key: movie._id,
+      className: "mb-4 "
+    }, _react.default.createElement(_reactBootstrap.Card, {
       className: "fav-card"
     }, _react.default.createElement(_reactBootstrap.Card.Header, null, _react.default.createElement(_reactBootstrap.Card.Title, null, movie.Title)), _react.default.createElement(_reactBootstrap.Card.Body, null, _react.default.createElement(_reactBootstrap.Card.Img, {
       variant: "top",
@@ -52284,8 +52290,8 @@ function ProfileView(props) {
       },
       variant: "outline-danger",
       type: "button"
-    }, "Remove")));
-  }))))));
+    }, "Remove"))));
+  }))));
 }
 
 ProfileView.propTypes = {
@@ -52332,6 +52338,8 @@ var _logOut = _interopRequireDefault(require("../../../public/img/log-out.svg"))
 
 require("./main-view.scss");
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -52376,7 +52384,8 @@ var MainView = /*#__PURE__*/function (_React$Component) {
         email: null,
         dob: null,
         favoriteMovies: []
-      }
+      },
+      filter: ""
     };
     return _this;
   }
@@ -52459,8 +52468,6 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       });
       localStorage.setItem('username', this.state.user.username);
       localStorage.setItem('password', this.state.user.password);
-      console.log('User: ' + this.state.user.username);
-      console.log('PW: ' + this.state.user.password); //window.open( '/users/me', '_self' );
     }
   }, {
     key: "getMovies",
@@ -52483,9 +52490,9 @@ var MainView = /*#__PURE__*/function (_React$Component) {
     key: "onMovieDel",
     value: function onMovieDel() {
       this.setState({
-        user: {
+        user: _extends({}, this.state.user, {
           favoriteMovies: JSON.parse(localStorage.getItem('favoriteMovies'))
-        }
+        })
       });
     }
   }, {
@@ -52495,7 +52502,11 @@ var MainView = /*#__PURE__*/function (_React$Component) {
 
       var _this$state = this.state,
           movies = _this$state.movies,
-          user = _this$state.user;
+          user = _this$state.user,
+          filter = _this$state.filter;
+      var movieFilter = movies.filter(function (movie) {
+        return movie.Title.toLowerCase().includes(filter.toLowerCase());
+      });
       /* If there is no user, the LoginView is rendered. If there is a logged in user,
       the user details are *passed as a prop to the LoginView**/
 
@@ -52518,8 +52529,14 @@ var MainView = /*#__PURE__*/function (_React$Component) {
             inline: true
           }, _react.default.createElement(_reactBootstrap.Form.Control, {
             type: "text",
+            value: _this3.state.filter,
             placeholder: "Search",
-            className: "mr-sm-2"
+            className: "mr-sm-2",
+            onChange: function onChange(e) {
+              _this3.setState({
+                filter: e.target.value
+              });
+            }
           }), _react.default.createElement(_reactBootstrap.Button, {
             variant: "outline-primary"
           }, "Search")), _react.default.createElement(_reactBootstrap.Nav, {
@@ -52549,7 +52566,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
             variant: "primary"
           }, "Sort"))), _react.default.createElement(_reactBootstrap.Row, {
             className: "px-5 py-3"
-          }, movies.map(function (movie) {
+          }, movieFilter.map(function (movie) {
             return _react.default.createElement(_reactBootstrap.Col, {
               className: "pb-3",
               key: movie._id,
@@ -52632,7 +52649,11 @@ var MainView = /*#__PURE__*/function (_React$Component) {
             movies: movies
           });
         }
-      }));
+      }), _react.default.createElement("footer", {
+        className: "fixed-bottom py-3 text-center"
+      }, _react.default.createElement("p", {
+        className: "my-auto"
+      }, "myFlix Services 2021. All rights reserved \xA9")));
     }
   }]);
 
@@ -52737,7 +52758,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60076" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58580" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

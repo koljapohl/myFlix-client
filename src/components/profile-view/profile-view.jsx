@@ -65,14 +65,16 @@ export function ProfileView( props ) {
   const onUnregister = () => {
     let user = localStorage.getItem( 'username' );
     let token = localStorage.getItem( 'token' );
-    axios.delete( `https://myflix-kp.herokuapp.com/users/${user}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    } )
-      .then( response => {
-        localStorage.clear();
-        alert( `We're sorry you're leaving ${user}.` );
-        window.open( '/', '_self' );
-      } );
+    if ( confirm( 'Are you sure you want to delete your account?' ) ) {
+      axios.delete( `https://myflix-kp.herokuapp.com/users/${user}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      } )
+        .then( response => {
+          localStorage.clear();
+          alert( `We're sorry you're leaving ${user}.` );
+          window.open( '/', '_self' );
+        } );
+    }
   }
 
   const handleUnfav = ( mId ) => {
@@ -226,31 +228,29 @@ export function ProfileView( props ) {
             </Button>
           </Col>
         </Row>
-        <Row lg={2} className="favorite-movies">
-          <Col>
-            <h4 className="mb-4">Favorite Movies</h4>
-            <CardDeck>
-              {favoriteMovieList.map( movie => (
-                <Card key={movie._id} className="fav-card">
-                  <Card.Header>
-                    <Card.Title>{movie.Title}</Card.Title>
-                  </Card.Header>
-                  <Card.Body>
-                    <Card.Img variant="top" src={movie.ImagePath} />
-                  </Card.Body>
-                  <Card.Footer>
-                    <Button
-                      className=""
-                      onClick={() => { handleUnfav( movie._id ) }}
-                      variant="outline-danger"
-                      type="button">
-                      Remove
+        <h4 className="mb-4">Favorite Movies</h4>
+        <Row className="favorite-movies">
+          {favoriteMovieList.map( movie => (
+            <Col key={movie._id} className="mb-4 ">
+              <Card className="fav-card">
+                <Card.Header>
+                  <Card.Title>{movie.Title}</Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  <Card.Img variant="top" src={movie.ImagePath} />
+                </Card.Body>
+                <Card.Footer>
+                  <Button
+                    className=""
+                    onClick={() => { handleUnfav( movie._id ) }}
+                    variant="outline-danger"
+                    type="button">
+                    Remove
                     </Button>
-                  </Card.Footer>
-                </Card>
-              ) )}
-            </CardDeck>
-          </Col>
+                </Card.Footer>
+              </Card>
+            </Col>
+          ) )}
         </Row>
       </Container>
     </React.Fragment>

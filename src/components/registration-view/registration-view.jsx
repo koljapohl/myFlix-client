@@ -13,6 +13,7 @@ export function RegistrationView( props ) {
   /* handles successful registration*/
   const handleRegister = ( e ) => {
     e.preventDefault();
+
     axios.post( 'https://myflix-kp.herokuapp.com/users', {
       Username: username,
       Password: password,
@@ -53,12 +54,13 @@ export function RegistrationView( props ) {
                       placeholder="Username"
                       name='username'
                       value={username}
+                      min="5"
                       required
                       onChange={e => setUsername( e.target.value )}
                       pattern='[a-zA-Z\d]{5,}'
                     />
                     <Form.Control.Feedback type="invalid">
-                      A Username is required and must at least contain 5 characters.
+                      A username is required and must at least contain 5 characters.
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -73,6 +75,9 @@ export function RegistrationView( props ) {
                       required
                       onChange={e => setPassword( e.target.value )}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      A password is required.
+                    </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formEmail">
