@@ -52385,7 +52385,8 @@ var MainView = /*#__PURE__*/function (_React$Component) {
         dob: null,
         favoriteMovies: []
       },
-      filter: ""
+      filter: "",
+      sorted: false
     };
     return _this;
   }
@@ -52496,6 +52497,15 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       });
     }
   }, {
+    key: "toggleSort",
+    value: function toggleSort() {
+      this.setState(function (currentState) {
+        return {
+          sorted: !currentState.sorted
+        };
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this3 = this;
@@ -52503,12 +52513,31 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       var _this$state = this.state,
           movies = _this$state.movies,
           user = _this$state.user,
-          filter = _this$state.filter;
+          filter = _this$state.filter,
+          sorted = _this$state.sorted;
       var movieFilter = movies.filter(function (movie) {
         return movie.Title.toLowerCase().includes(filter.toLowerCase());
       });
+
+      if (sorted) {
+        movieFilter.sort(function (a, b) {
+          var nameA = a.Title.toUpperCase();
+          var nameB = b.Title.toUpperCase();
+
+          if (nameA < nameB) {
+            return -1;
+          }
+
+          if (nameA > nameB) {
+            return 1;
+          }
+
+          return 0;
+        });
+      }
       /* If there is no user, the LoginView is rendered. If there is a logged in user,
       the user details are *passed as a prop to the LoginView**/
+
 
       return _react.default.createElement(_reactRouterDom.BrowserRouter, null, _react.default.createElement(_reactRouterDom.Route, {
         exact: true,
@@ -52530,16 +52559,14 @@ var MainView = /*#__PURE__*/function (_React$Component) {
           }, _react.default.createElement(_reactBootstrap.Form.Control, {
             type: "text",
             value: _this3.state.filter,
-            placeholder: "Search",
+            placeholder: "filter movies",
             className: "mr-sm-2",
             onChange: function onChange(e) {
               _this3.setState({
                 filter: e.target.value
               });
             }
-          }), _react.default.createElement(_reactBootstrap.Button, {
-            variant: "outline-primary"
-          }, "Search")), _react.default.createElement(_reactBootstrap.Nav, {
+          })), _react.default.createElement(_reactBootstrap.Nav, {
             className: "ml-auto button-wrapper"
           }, _react.default.createElement(_reactRouterDom.Link, {
             to: '/users/me'
@@ -52563,7 +52590,10 @@ var MainView = /*#__PURE__*/function (_React$Component) {
             className: ""
           }, _react.default.createElement(_reactBootstrap.Button, {
             type: "button",
-            variant: "primary"
+            variant: "primary",
+            onClick: function onClick() {
+              return _this3.toggleSort();
+            }
           }, "Sort"))), _react.default.createElement(_reactBootstrap.Row, {
             className: "px-5 py-3"
           }, movieFilter.map(function (movie) {

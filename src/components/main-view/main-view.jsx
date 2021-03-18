@@ -27,7 +27,8 @@ export class MainView extends React.Component {
         dob: null,
         favoriteMovies: []
       },
-      filter: ""
+      filter: "",
+      sorted: false
     };
   }
 
@@ -127,9 +128,28 @@ export class MainView extends React.Component {
     } );
   }
 
+  toggleSort() {
+    this.setState( ( currentState ) => ( {
+      sorted: !currentState.sorted
+    } ) );
+  }
+
   render() {
-    const { movies, user, filter } = this.state;
+    const { movies, user, filter, sorted } = this.state;
     const movieFilter = movies.filter( movie => movie.Title.toLowerCase().includes( filter.toLowerCase() ) );
+    if ( sorted ) {
+      movieFilter.sort( function ( a, b ) {
+        var nameA = a.Title.toUpperCase();
+        var nameB = b.Title.toUpperCase();
+        if ( nameA < nameB ) {
+          return -1;
+        }
+        if ( nameA > nameB ) {
+          return 1;
+        }
+        return 0;
+      } );
+    }
 
     /* If there is no user, the LoginView is rendered. If there is a logged in user,
     the user details are *passed as a prop to the LoginView**/
@@ -147,10 +167,9 @@ export class MainView extends React.Component {
                   <Form.Control
                     type="text"
                     value={this.state.filter}
-                    placeholder="Search"
+                    placeholder="filter movies"
                     className="mr-sm-2"
                     onChange={e => { this.setState( { filter: e.target.value } ) }} />
-                  <Button variant="outline-primary">Search</Button>
                 </Form>
                 <Nav className="ml-auto button-wrapper">
                   <Link to={'/users/me'}>
@@ -172,7 +191,8 @@ export class MainView extends React.Component {
                 <Col className="">
                   <Button
                     type="button"
-                    variant="primary">
+                    variant="primary"
+                    onClick={() => this.toggleSort()}>
                     Sort
                   </Button>
                 </Col>
