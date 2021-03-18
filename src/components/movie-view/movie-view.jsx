@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Navbar, Nav, Row, Col, Button } from 'react-bootstrap/';
+import { Navbar, Nav, Row, Col, Button } from 'react-bootstrap/';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import arrow from '../../../public/img/arrow.svg';
 import logout from '../../../public/img/log-out.svg'
@@ -11,7 +12,32 @@ export class MovieView extends React.Component {
   constructor() {
     super();
 
-    this.state = {};
+    this.state = {
+      favorites: localStorage.getItem( 'favoriteMovies' ) ? JSON.parse( localStorage.getItem( 'favoriteMovies' ) ) : []
+    };
+  }
+
+  handleFavorite( movie ) {
+    let token = localStorage.getItem( 'token' );
+    let user = localStorage.getItem( 'username' );
+    if ( this.state.favorites.indexOf( movie._id ) > -1 ) {
+      alert( `${movie.Title} is already one of your favorites.` );
+    } else {
+      axios.post( `https://myflix-kp.herokuapp.com/users/${user}/movies/${movie._id}`, {},
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        } )
+        .then( () => {
+          this.setState( {
+            favorites: [movie._id, ...this.state.favorites]
+          } );
+          alert( `${movie.Title} was successfully added to your favorites list.` );
+          localStorage.setItem( 'favoriteMovies', JSON.stringify( this.state.favorites ) );
+        } )
+        .catch( error => {
+          console.error( error );
+        } );
+    }
   }
 
   render() {
@@ -45,9 +71,17 @@ export class MovieView extends React.Component {
               <img className="arrow" src={arrow} alt="back icon" />
             </Link>
           </Col>
+          <Col xs="auto">
+            <h1 className="brand my-auto">{movie.Title}</h1>
+          </Col>
           <Col>
-            <h1 className="brand my-auto">{movie.Title}
-              <Button variant="link" type="button">Star</Button></h1>
+            <Button
+              className="ml-4"
+              onClick={() => { this.handleFavorite( movie ) }}
+              variant="outline-primary"
+              type="button">
+              Add to favorites
+            </Button>
           </Col>
         </Row>
         <Row className="px-5 content-body">

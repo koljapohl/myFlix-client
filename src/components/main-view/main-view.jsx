@@ -99,14 +99,11 @@ export class MainView extends React.Component {
         favoriteMovies: data.FavoriteMovies
       }
     } );
+    localStorage.setItem( 'username', this.state.user.username );
+    localStorage.setItem( 'password', this.state.user.password );
     console.log( 'User: ' + this.state.user.username );
     console.log( 'PW: ' + this.state.user.password );
 
-    localStorage.setItem( 'favoriteMovies', JSON.stringify( this.state.user.favoriteMovies ) );
-    localStorage.setItem( 'username', this.state.user.username );
-    localStorage.setItem( 'password', this.state.user.password );
-    localStorage.setItem( 'email', this.state.user.email );
-    localStorage.setItem( 'dob', this.state.user.dob );
     //window.open( '/users/me', '_self' );
   };
 
@@ -122,6 +119,14 @@ export class MainView extends React.Component {
       .catch( function ( error ) {
         console.log( error );
       } );
+  }
+
+  onMovieDel() {
+    this.setState( {
+      user: {
+        favoriteMovies: JSON.parse( localStorage.getItem( 'favoriteMovies' ) )
+      }
+    } );
   }
 
   render() {
@@ -186,10 +191,13 @@ export class MainView extends React.Component {
           return <RegistrationView onRegistration={( username ) => this.onRegistration( username )} />;
         }} />
 
-        <Route path="/movies/:movieId" render={( { match } ) => {
-          return <MovieView onClick={() => this.onLogout()} movie={movies.find( m => m._id === match.params.movieId )} />;
-        }
-        } />
+        <Route path="/movies/:movieId"
+          render={( { match } ) => {
+            return <MovieView
+              onClick={() => this.onLogout()}
+              movie={movies.find( m => m._id === match.params.movieId )} />;
+          }
+          } />
 
         <Route path="/genres/:title" render={( { match } ) => {
           return <GenreView onClick={() => this.onLogout()} genre={movies.find( g => g.Genre.Title === match.params.title ).Genre} movies={movies} />;
@@ -204,11 +212,8 @@ export class MainView extends React.Component {
           return <ProfileView
             onLogout={() => this.onLogout()}
             onUpdate={( data ) => this.onUpdate( data )}
-            movies={movies}
-            username={this.state.user.username}
-            password={this.state.user.password}
-            email={this.state.user.email}
-            dob={this.state.user.dob} />
+            onMovieDel={() => this.onMovieDel()}
+            movies={movies} />
         }} />
       </Router >
     );

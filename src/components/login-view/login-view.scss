@@ -1,11 +1,10 @@
 @import '../../design';
 
 @media (min-width: 576px) {
-  .form-label {
+  .form-label-login {
     text-align: end;
   }
 }
-
-.form-control {
+.form-control-login {
   min-width: 100px;
 }

@@ -46,7 +46,7 @@ export function LoginView( props ) {
             <Col>
               <Form onSubmit={handleSubmit}>
                 <Form.Group as={Row} controlId="formUsername">
-                  <Form.Label column sm={2} md={3}>Username</Form.Label>
+                  <Form.Label className="form-label-login" column sm={2} md={3}>Username</Form.Label>
                   <Col>
                     <Form.Control
                       type="text"
@@ -54,6 +54,7 @@ export function LoginView( props ) {
                       name='username'
                       value={username}
                       required
+                      className="form-control-login"
                       onChange={e => setUsername( e.target.value )}
                       pattern='[a-zA-Z\d]{5,}'
                     />
@@ -63,7 +64,7 @@ export function LoginView( props ) {
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formPassword">
-                  <Form.Label column sm={2} md={3}>Password</Form.Label>
+                  <Form.Label className="form-label-login" column sm={2} md={3}>Password</Form.Label>
                   <Col>
                     <Form.Control
                       type="password"
@@ -71,6 +72,7 @@ export function LoginView( props ) {
                       placeholder="Password"
                       name="password"
                       required
+                      className="form-control-login"
                       onChange={e => setPassword( e.target.value )}
                     />
                     <Form.Control.Feedback type="invalid">
