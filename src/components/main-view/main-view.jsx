@@ -26,7 +26,8 @@ export class MainView extends React.Component {
         email: null,
         dob: null,
         favoriteMovies: []
-      }
+      },
+      filter: ""
     };
   }
 
@@ -101,10 +102,6 @@ export class MainView extends React.Component {
     } );
     localStorage.setItem( 'username', this.state.user.username );
     localStorage.setItem( 'password', this.state.user.password );
-    console.log( 'User: ' + this.state.user.username );
-    console.log( 'PW: ' + this.state.user.password );
-
-    //window.open( '/users/me', '_self' );
   };
 
   getMovies( token ) {
@@ -124,13 +121,15 @@ export class MainView extends React.Component {
   onMovieDel() {
     this.setState( {
       user: {
+        ...this.state.user,
         favoriteMovies: JSON.parse( localStorage.getItem( 'favoriteMovies' ) )
       }
     } );
   }
 
   render() {
-    const { movies, user } = this.state;
+    const { movies, user, filter } = this.state;
+    const movieFilter = movies.filter( movie => movie.Title.toLowerCase().includes( filter.toLowerCase() ) );
 
     /* If there is no user, the LoginView is rendered. If there is a logged in user,
     the user details are *passed as a prop to the LoginView**/
@@ -145,7 +144,12 @@ export class MainView extends React.Component {
               <Navbar sticky="top" className="px-5 py-0 mb-2">
                 <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
                 <Form inline>
-                  <Form.Control type="text" placeholder="Search" className="mr-sm-2" />
+                  <Form.Control
+                    type="text"
+                    value={this.state.filter}
+                    placeholder="Search"
+                    className="mr-sm-2"
+                    onChange={e => { this.setState( { filter: e.target.value } ) }} />
                   <Button variant="outline-primary">Search</Button>
                 </Form>
                 <Nav className="ml-auto button-wrapper">
@@ -174,7 +178,7 @@ export class MainView extends React.Component {
                 </Col>
               </Row>
               <Row className="px-5 py-3">
-                {movies.map( movie => (
+                {movieFilter.map( movie => (
                   <Col className="pb-3" key={movie._id} xs={12} sm={6} md={4} lg={3} xl={2}>
                     <MovieCard
                       key={movie._id}
@@ -215,6 +219,10 @@ export class MainView extends React.Component {
             onMovieDel={() => this.onMovieDel()}
             movies={movies} />
         }} />
+
+        <footer className="fixed-bottom py-3 text-center">
+          <p className="my-auto">myFlix Services 2021. All rights reserved &#169;</p>
+        </footer>
       </Router >
     );
   }
