@@ -15,23 +15,75 @@ export function LoginView( props ) {
 
   const handleSubmit = ( e ) => {
     e.preventDefault();
-    console.log( username, password );
-    /* send request to the server for authentication */
-    axios.post( 'https://myflix-kp.herokuapp.com/login', {},
-      {
-        params: {
-          Username: username,
-          Password: password
-        }
-      } )
-      .then( response => {
-        const data = response.data;
-        props.onLoggedIn( data );
-      } )
-      .catch( e => {
-        console.error( 'no such user' );
-      } );
+    let form = document.querySelector( '.login-form' );
+    let usernameInput = document.querySelector( '#formUsername' );
+    let passwordInput = document.querySelector( '#formPassword' );
+
+    if ( validateForm() ) {
+      console.log( username, password );
+      /* send request to the server for authentication */
+      axios.post( 'https://myflix-kp.herokuapp.com/login', {},
+        {
+          params: {
+            Username: username,
+            Password: password
+          }
+        } )
+        .then( response => {
+          const data = response.data;
+          props.onLoggedIn( data );
+        } )
+        .catch( e => {
+          console.error( 'no such user' );
+        } );
+    }
+
+    function validateUsername() {
+      let value = usernameInput.value;
+      let reg = /\w{5,}/;
+      if ( !value ) {
+        showErrorMessage( usernameInput, 'Username is required.' );
+        return false;
+      }
+      // if(value.length <=4) {
+      //   showErrorMessage(usernameInput, 'Username must contain at least 5 characters.');
+      // }
+      if ( !reg.test( value ) ) {
+        showErrorMessage( usernameInput, 'Username must contain at least 5 alphanumeric characters.' );
+      }
+    }
+    function validateForm() {
+      let isValidUsername = validateUsername();
+      //let isValidPassword = validatePassword();
+      // let isValidEmail = validateEmail();
+      // let isValidDob = validateDob();
+      return isValidUsername //&& isValidPassword;
+    }
+    function showErrorMessage( input, message ) {
+      let container = input.parentElement;
+      let error = container.querySelector( '.error-message' );
+      if ( error ) {
+        container.removeChild( error );
+      }
+
+      if ( message ) {
+        let error = document.createElement( 'div' );
+        error.classList.add( 'error-message' );
+        error.innerText = message;
+        container.appendChild( error );
+      }
+    }
+
+    usernameInput.oninput = validateUsername;
+    form.addEventListener( 'submit', ( e ) => {
+      e.preventDefault();
+
+      if ( validateForm() ) {
+        handleSubmit();
+      }
+    } );
   };
+
 
   /* switches to registration form for new users */
   const swapView = ( e ) => {
@@ -55,7 +107,7 @@ export function LoginView( props ) {
           <h3 className="my-5">Log in to myFlix</h3>
           <Row md={2} className="justify-content-center">
             <Col>
-              <Form onSubmit={handleSubmit}>
+              <Form noValidate className="login-form" onSubmit={handleSubmit}>
                 <Form.Group as={Row} controlId="formUsername">
                   <Form.Label className="form-label-login" column sm={2} md={3}>Username</Form.Label>
                   <Col>

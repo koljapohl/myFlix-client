@@ -51227,19 +51227,77 @@ function LoginView(props) {
 
   var handleSubmit = function handleSubmit(e) {
     e.preventDefault();
-    console.log(username, password);
-    /* send request to the server for authentication */
+    var form = document.querySelector('.login-form');
+    var usernameInput = document.querySelector('#formUsername');
+    var passwordInput = document.querySelector('#formPassword');
 
-    _axios.default.post('https://myflix-kp.herokuapp.com/login', {}, {
-      params: {
-        Username: username,
-        Password: password
+    if (validateForm()) {
+      console.log(username, password);
+      /* send request to the server for authentication */
+
+      _axios.default.post('https://myflix-kp.herokuapp.com/login', {}, {
+        params: {
+          Username: username,
+          Password: password
+        }
+      }).then(function (response) {
+        var data = response.data;
+        props.onLoggedIn(data);
+      }).catch(function (e) {
+        console.error('no such user');
+      });
+    }
+
+    function validateUsername() {
+      var value = usernameInput.value;
+      var reg = /\w{5,}/;
+
+      if (!value) {
+        showErrorMessage(usernameInput, 'Username is required.');
+        return false;
+      } // if(value.length <=4) {
+      //   showErrorMessage(usernameInput, 'Username must contain at least 5 characters.');
+      // }
+
+
+      if (!reg.test(value)) {
+        showErrorMessage(usernameInput, 'Username must contain at least 5 alphanumeric characters.');
       }
-    }).then(function (response) {
-      var data = response.data;
-      props.onLoggedIn(data);
-    }).catch(function (e) {
-      console.error('no such user');
+    }
+
+    function validateForm() {
+      var isValidUsername = validateUsername(); //let isValidPassword = validatePassword();
+      // let isValidEmail = validateEmail();
+      // let isValidDob = validateDob();
+
+      return isValidUsername; //&& isValidPassword;
+    }
+
+    function showErrorMessage(input, message) {
+      var container = input.parentElement;
+      var error = container.querySelector('.error-message');
+
+      if (error) {
+        container.removeChild(error);
+      }
+
+      if (message) {
+        var _error = document.createElement('div');
+
+        _error.classList.add('error-message');
+
+        _error.innerText = message;
+        container.appendChild(_error);
+      }
+    }
+
+    usernameInput.oninput = validateUsername;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (validateForm()) {
+        handleSubmit();
+      }
     });
   };
   /* switches to registration form for new users */
@@ -51269,6 +51327,8 @@ function LoginView(props) {
     md: 2,
     className: "justify-content-center"
   }, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form, {
+    noValidate: true,
+    className: "login-form",
     onSubmit: handleSubmit
   }, _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
