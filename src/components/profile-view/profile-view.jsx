@@ -71,17 +71,12 @@ export function ProfileView( props ) {
 
   useEffect( () => {
     let usernameInput = document.querySelector( '#formUsername' );
-    let passwordInput = document.querySelector( '#formPassword' );
     let emailInput = document.querySelector( '#formEmail' );
     let dobInput = document.querySelector( '#formBirth' );
 
     function validateUsername() {
       let value = usernameInput.value;
       let reg = /\w{5,}/;
-      if ( !value ) {
-        showErrorMessage( usernameInput, 'Username is required.' );
-        return false;
-      }
       if ( !reg.test( value ) ) {
         showErrorMessage( usernameInput, 'Username must contain at least 5 alphanumeric characters.' );
         return false;
@@ -89,22 +84,11 @@ export function ProfileView( props ) {
       showErrorMessage( usernameInput, null );
       return true;
     }
-    function validatePassword() {
-      let value = passwordInput.value;
-      if ( !value ) {
-        showErrorMessage( passwordInput, 'Please provide your password.' );
-        return false;
-      }
-      showErrorMessage( passwordInput, null );
-      return true;
-    }
+
     function validateEmail() {
       let value = emailInput.value;
       let reg = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-      if ( !value ) {
-        showErrorMessage( emailInput, 'Email is required.' );
-        return false;
-      }
+
       if ( !reg.test( value ) ) {
         showErrorMessage( emailInput, 'Invalid mail pattern.' );
         return false;
@@ -137,7 +121,6 @@ export function ProfileView( props ) {
       }
     }
     usernameInput.oninput = validateUsername;
-    passwordInput.oninput = validatePassword;
     emailInput.oninput = validateEmail;
     dobInput.onchange = validateDob;
   } );
