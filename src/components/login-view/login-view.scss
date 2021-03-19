@@ -17,3 +17,17 @@
   user-select: none;
   cursor: pointer;
 }
+.error-message{
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 700;
+  color: $secondary-color;
+}
+.note-message{
+  text-align: left;
+  padding-top: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $danger;
+}

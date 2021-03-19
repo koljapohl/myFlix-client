@@ -136,7 +136,9 @@ export class MainView extends React.Component {
 
   render() {
     const { movies, user, filter, sorted } = this.state;
+    // list of filtered movies non case-sensitive!
     const movieFilter = movies.filter( movie => movie.Title.toLowerCase().includes( filter.toLowerCase() ) );
+    // sort functionality (alphabetically)
     if ( sorted ) {
       movieFilter.sort( function ( a, b ) {
         var nameA = a.Title.toUpperCase();
@@ -168,7 +170,7 @@ export class MainView extends React.Component {
                     type="text"
                     value={this.state.filter}
                     placeholder="filter movies"
-                    className="mr-sm-2"
+                    className="mr-2"
                     onChange={e => { this.setState( { filter: e.target.value } ) }} />
                 </Form>
                 <Nav className="ml-auto button-wrapper">

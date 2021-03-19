@@ -9931,6 +9931,46 @@ h3 {
 .btn-col {
   text-align: end;
 }
+
+.form-control-register {
+  min-width: 120px;
+}
+
+.password-trigger {
+  position: absolute;
+  top: 15%;
+  right: 2rem;
+  color: #000;
+  z-index: 9999;
+  user-select: none;
+  cursor: pointer;
+}
+
+.error-message {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 700;
+  color: #95b395;
+}
+
+.note-message {
+  text-align: left;
+  padding-top: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #dc3545;
+}
+
+.last-form-row {
+  margin-bottom: 0.2rem !important;
+}
+
+.required-inputs {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #1a261a;
+}
 @charset "UTF-8";
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)
@@ -19878,6 +19918,22 @@ h3 {
   z-index: 9999;
   user-select: none;
   cursor: pointer;
+}
+
+.error-message {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 700;
+  color: #95b395;
+}
+
+.note-message {
+  text-align: left;
+  padding-top: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #dc3545;
 }
 @charset "UTF-8";
 /*!
@@ -69595,6 +69651,46 @@ h3 {
 
 .button-wrapper {
   align-items: center;
+}
+
+.form-control-profile {
+  min-width: 200px;
+}
+
+.password-trigger {
+  position: absolute;
+  top: 15%;
+  right: 2rem;
+  color: #000;
+  z-index: 9999;
+  user-select: none;
+  cursor: pointer;
+}
+
+.error-message {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 700;
+  color: #95b395;
+}
+
+.note-message {
+  text-align: left;
+  padding-top: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #dc3545;
+}
+
+.last-form-row {
+  margin-bottom: 0.2rem !important;
+}
+
+.required-inputs {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #1a261a;
 }
 
 .description {

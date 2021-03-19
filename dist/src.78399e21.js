@@ -51033,37 +51033,161 @@ function RegistrationView(props) {
       email = _useState6[0],
       setEmail = _useState6[1];
 
-  var _useState7 = (0, _react.useState)(''),
+  var _useState7 = (0, _react.useState)('1970-01-01'),
       _useState8 = _slicedToArray(_useState7, 2),
       birthday = _useState8[0],
       setBirthday = _useState8[1];
+
+  var _useState9 = (0, _react.useState)('password'),
+      _useState10 = _slicedToArray(_useState9, 2),
+      type = _useState10[0],
+      setType = _useState10[1];
+
+  var _useState11 = (0, _react.useState)('Show'),
+      _useState12 = _slicedToArray(_useState11, 2),
+      word = _useState12[0],
+      setWord = _useState12[1];
   /* handles successful registration*/
 
 
   var handleRegister = function handleRegister(e) {
     e.preventDefault();
+    var error = document.querySelector('.error-message');
 
-    _axios.default.post('https://myflix-kp.herokuapp.com/users', {
-      Username: username,
-      Password: password,
-      Email: email,
-      Birthday: birthday
-    }).then(function (response) {
-      var data = response.data;
-      console.log(data);
-      props.onRegistration(username);
-      window.open('/', '_self');
-    }).catch(function (e) {
-      console.log('error registering the user');
-      console.error(e);
-    });
+    if (error) {
+      var container = document.querySelector('.btn-register').parentElement;
+      var note = document.createElement('div');
+      note.classList.add('note-message');
+      note.innerText = "No registration possible due to form errors. \rPlease rectify your inputs.";
+      container.appendChild(note);
+      setTimeout(function () {
+        container.removeChild(note);
+      }, 4000);
+      return false;
+    } else {
+      _axios.default.post('https://myflix-kp.herokuapp.com/users', {
+        Username: username,
+        Password: password,
+        Email: email,
+        Birthday: birthday
+      }).then(function (response) {
+        var data = response.data;
+        console.log(data);
+        props.onRegistration(username);
+        window.open('/', '_self');
+      }).catch(function (e) {
+        console.log('error registering the user');
+        console.error(e);
+      });
+
+      return true;
+    }
   };
-  /* handle an abortion of registration process*/
 
+  (0, _react.useEffect)(function () {
+    var usernameInput = document.querySelector('#formUsername');
+    var passwordInput = document.querySelector('#formPassword');
+    var emailInput = document.querySelector('#formEmail');
+    var dobInput = document.querySelector('#formBirth');
+
+    function validateUsername() {
+      var value = usernameInput.value;
+      var reg = /\w{5,}/;
+
+      if (!value) {
+        showErrorMessage(usernameInput, 'Username is required.');
+        return false;
+      }
+
+      if (!reg.test(value)) {
+        showErrorMessage(usernameInput, 'Username must contain at least 5 alphanumeric characters.');
+        return false;
+      }
+
+      showErrorMessage(usernameInput, null);
+      return true;
+    }
+
+    function validatePassword() {
+      var value = passwordInput.value;
+
+      if (!value) {
+        showErrorMessage(passwordInput, 'Please provide your password.');
+        return false;
+      }
+
+      showErrorMessage(passwordInput, null);
+      return true;
+    }
+
+    function validateEmail() {
+      var value = emailInput.value;
+      var reg = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+
+      if (!value) {
+        showErrorMessage(emailInput, 'Email is required.');
+        return false;
+      }
+
+      if (!reg.test(value)) {
+        showErrorMessage(emailInput, 'Invalid mail pattern.');
+        return false;
+      }
+
+      showErrorMessage(emailInput, null);
+      return true;
+    }
+
+    function validateDob() {
+      var value = dobInput.value;
+
+      if (!value instanceof Date) {
+        showErrorMessage(dobInput, 'Please enter a valid date.');
+        return false;
+      }
+
+      showErrorMessage(dobInput, null);
+      return true;
+    }
+
+    function showErrorMessage(input, message) {
+      var container = input.parentElement;
+      var error = container.querySelector('.error-message');
+
+      if (error) {
+        container.removeChild(error);
+      }
+
+      if (message) {
+        var _error = document.createElement('div');
+
+        _error.classList.add('error-message');
+
+        _error.innerText = message;
+        container.appendChild(_error);
+      }
+    }
+
+    usernameInput.oninput = validateUsername;
+    passwordInput.oninput = validatePassword;
+    emailInput.oninput = validateEmail;
+    dobInput.onchange = validateDob;
+  });
+  /* handle an abortion of registration process*/
 
   var swapView = function swapView(e) {
     e.preventDefault();
     window.open('/', '_self');
+  }; //toggle pw visibility
+
+
+  var changeState = function changeState() {
+    var oldState = type;
+    var isTextOrHide = oldState === 'password';
+    var newState = isTextOrHide ? 'text' : 'password';
+    var newWord = isTextOrHide ? 'Hide' : 'Show';
+    setType(newState);
+    setWord(newWord);
   };
 
   return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, {
@@ -51076,6 +51200,7 @@ function RegistrationView(props) {
     md: 2,
     className: "justify-content-center"
   }, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form, {
+    noValidate: true,
     onSubmit: handleRegister
   }, _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
@@ -51084,54 +51209,50 @@ function RegistrationView(props) {
     column: true,
     sm: 2,
     md: 3
-  }, "Username"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
+  }, "Username*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
     type: "text",
     placeholder: "Username",
     name: "username",
+    className: "form-control-register",
     value: username,
-    min: "5",
-    required: true,
     onChange: function onChange(e) {
       return setUsername(e.target.value);
-    },
-    pattern: "[a-zA-Z\\d]{5,}"
-  }), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
-    type: "invalid"
-  }, "A username is required and must at least contain 5 characters."))), _react.default.createElement(_reactBootstrap.Form.Group, {
+    }
+  }))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formPassword"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
     column: true,
     sm: 2,
     md: 3
-  }, "Password"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
-    type: "password",
+  }, "Password*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
+    type: type,
     value: password,
     placeholder: "Password",
     name: "password",
-    required: true,
+    className: "form-control-register",
     onChange: function onChange(e) {
       return setPassword(e.target.value);
     }
-  }), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
-    type: "invalid"
-  }, "A password is required."))), _react.default.createElement(_reactBootstrap.Form.Group, {
+  }), _react.default.createElement("span", {
+    className: "password-trigger",
+    onClick: changeState
+  }, word))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formEmail"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
     column: true,
     sm: 2,
     md: 3
-  }, "Email"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
+  }, "Email*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
     type: "email",
     value: email,
     placeholder: "Email",
     name: "email",
-    required: true,
+    className: "form-control-register",
     onChange: function onChange(e) {
       return setEmail(e.target.value);
-    },
-    pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
+    }
   }))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formBirth"
@@ -51144,14 +51265,18 @@ function RegistrationView(props) {
     value: birthday,
     placeholder: "Birthday",
     name: "birthday",
+    className: "form-control-register",
     onChange: function onChange(e) {
       return setBirthday(e.target.value);
     }
-  }))), _react.default.createElement(_reactBootstrap.Row, {
+  }))), _react.default.createElement("span", {
+    className: "required-inputs"
+  }, "fields marked with \"*\" are required"), _react.default.createElement(_reactBootstrap.Row, {
     className: "my-4"
   }, _react.default.createElement(_reactBootstrap.Col, {
     className: "btn-col"
   }, _react.default.createElement(_reactBootstrap.Button, {
+    className: "btn-register",
     variant: "primary",
     type: "submit"
   }, "Register"), _react.default.createElement(_reactBootstrap.Button, {
@@ -51227,11 +51352,19 @@ function LoginView(props) {
 
   var handleSubmit = function handleSubmit(e) {
     e.preventDefault();
-    var form = document.querySelector('.login-form');
-    var usernameInput = document.querySelector('#formUsername');
-    var passwordInput = document.querySelector('#formPassword');
+    var error = document.querySelector('.error-message');
 
-    if (validateForm()) {
+    if (error) {
+      var container = document.querySelector('.btn-login').parentElement;
+      var note = document.createElement('div');
+      note.classList.add('note-message');
+      note.innerText = "No login possible due to form errors. \rPlease rectify your inputs.";
+      container.appendChild(note);
+      setTimeout(function () {
+        container.removeChild(note);
+      }, 4000);
+      return false;
+    } else {
       console.log(username, password);
       /* send request to the server for authentication */
 
@@ -51246,7 +51379,14 @@ function LoginView(props) {
       }).catch(function (e) {
         console.error('no such user');
       });
+
+      return true;
     }
+  };
+
+  (0, _react.useEffect)(function () {
+    var usernameInput = document.querySelector('#formUsername');
+    var passwordInput = document.querySelector('#formPassword');
 
     function validateUsername() {
       var value = usernameInput.value;
@@ -51255,22 +51395,27 @@ function LoginView(props) {
       if (!value) {
         showErrorMessage(usernameInput, 'Username is required.');
         return false;
-      } // if(value.length <=4) {
-      //   showErrorMessage(usernameInput, 'Username must contain at least 5 characters.');
-      // }
-
+      }
 
       if (!reg.test(value)) {
         showErrorMessage(usernameInput, 'Username must contain at least 5 alphanumeric characters.');
+        return false;
       }
+
+      showErrorMessage(usernameInput, null);
+      return true;
     }
 
-    function validateForm() {
-      var isValidUsername = validateUsername(); //let isValidPassword = validatePassword();
-      // let isValidEmail = validateEmail();
-      // let isValidDob = validateDob();
+    function validatePassword() {
+      var value = passwordInput.value;
 
-      return isValidUsername; //&& isValidPassword;
+      if (!value) {
+        showErrorMessage(passwordInput, 'Please provide your password.');
+        return false;
+      }
+
+      showErrorMessage(passwordInput, null);
+      return true;
     }
 
     function showErrorMessage(input, message) {
@@ -51292,16 +51437,9 @@ function LoginView(props) {
     }
 
     usernameInput.oninput = validateUsername;
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      if (validateForm()) {
-        handleSubmit();
-      }
-    });
-  };
+    passwordInput.oninput = validatePassword;
+  });
   /* switches to registration form for new users */
-
 
   var swapView = function swapView(e) {
     e.preventDefault();
@@ -51338,7 +51476,7 @@ function LoginView(props) {
     column: true,
     sm: 2,
     md: 3
-  }, "Username"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
+  }, "Username*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
     type: "text",
     placeholder: "Username",
     name: "username",
@@ -51347,11 +51485,8 @@ function LoginView(props) {
     className: "form-control-login",
     onChange: function onChange(e) {
       return setUsername(e.target.value);
-    },
-    pattern: "[a-zA-Z\\d]{5,}"
-  }), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
-    type: "invalid"
-  }, "A Username is required and must at least contain 5 characters."))), _react.default.createElement(_reactBootstrap.Form.Group, {
+    }
+  }))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formPassword"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
@@ -51359,12 +51494,11 @@ function LoginView(props) {
     column: true,
     sm: 2,
     md: 3
-  }, "Password"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
+  }, "Password*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
     type: type,
     value: password,
     placeholder: "Password",
     name: "password",
-    required: true,
     className: "form-control-login",
     onChange: function onChange(e) {
       return setPassword(e.target.value);
@@ -51372,12 +51506,11 @@ function LoginView(props) {
   }), _react.default.createElement("span", {
     className: "password-trigger",
     onClick: changeState
-  }, word), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
-    type: "invalid"
-  }, "Password is required."))), _react.default.createElement(_reactBootstrap.Row, {
+  }, word))), _react.default.createElement(_reactBootstrap.Row, {
     className: "my-4"
   }, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Button, {
     block: true,
+    className: "btn-login",
     variant: "primary",
     type: "submit"
   }, "Log In"))), _react.default.createElement(_reactBootstrap.Form.Row, {
@@ -52073,8 +52206,6 @@ var _logOut = _interopRequireDefault(require("../../../public/img/log-out.svg"))
 
 require("./profile-view.scss");
 
-var _Toast = _interopRequireDefault(require("react-bootstrap/esm/Toast"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -52119,11 +52250,23 @@ function ProfileView(props) {
       favoriteMovies = _useState10[0],
       setFavoriteMovies = _useState10[1];
 
+  var _useState11 = (0, _react.useState)('password'),
+      _useState12 = _slicedToArray(_useState11, 2),
+      type = _useState12[0],
+      setType = _useState12[1];
+
+  var _useState13 = (0, _react.useState)('Show'),
+      _useState14 = _slicedToArray(_useState13, 2),
+      word = _useState14[0],
+      setWord = _useState14[1]; // convert birthday to common format
+
+
   var convertDob;
 
   if (dob) {
     convertDob = dob.slice(0, 10);
-  }
+  } // List of current users favorite Movies
+
 
   var favoriteMovieList = props.movies.filter(function (movie) {
     return favoriteMovies.includes(movie._id);
@@ -52131,33 +52274,135 @@ function ProfileView(props) {
 
   var updateUser = function updateUser(e) {
     e.preventDefault();
-    var token = localStorage.getItem('token');
-    var un = localStorage.getItem('username');
-    var pw = localStorage.getItem('password');
-    var em = localStorage.getItem('email');
-    var birth = localStorage.getItem('dob');
+    var error = document.querySelector('.error-message');
 
-    _axios.default.put("https://myflix-kp.herokuapp.com/users/".concat(un), {
-      Username: username == un ? un : username,
-      Password: password == pw ? pw : password,
-      Email: email == em ? em : email,
-      Birthday: dob == birth ? birth : dob
-    }, {
-      headers: {
-        Authorization: "Bearer ".concat(token)
-      }
-    }).then(function (response) {
-      var data = response.data;
-      props.onUpdate(data);
-      setUsername(data.Username);
-      setPassword(data.Password);
-      setEmail(data.Email);
-      setDob(data.Birthday);
-      alert('User has been updated successfully.');
-    }).catch(function (error) {
-      console.log(error);
-    });
+    if (error) {
+      var container = document.querySelector('.btn-update').parentElement.parentElement;
+      var note = document.createElement('div');
+      note.classList.add('note-message', 'note-message-update');
+      note.innerText = "No update possible due to form errors. \rPlease rectify your inputs.";
+      container.appendChild(note); //setTimeout( function () { container.removeChild( note ) }, 4000 );
+
+      return false;
+    } else {
+      var token = localStorage.getItem('token');
+      var un = localStorage.getItem('username');
+      var pw = localStorage.getItem('password');
+      var em = localStorage.getItem('email');
+      var birth = localStorage.getItem('dob');
+
+      _axios.default.put("https://myflix-kp.herokuapp.com/users/".concat(un), {
+        Username: username == un ? un : username,
+        Password: password == pw ? pw : password,
+        Email: email == em ? em : email,
+        Birthday: dob == birth ? birth : dob
+      }, {
+        headers: {
+          Authorization: "Bearer ".concat(token)
+        }
+      }).then(function (response) {
+        var data = response.data;
+        props.onUpdate(data);
+        setUsername(data.Username);
+        setPassword(data.Password);
+        setEmail(data.Email);
+        setDob(data.Birthday);
+        alert('User has been updated successfully.');
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
   };
+
+  (0, _react.useEffect)(function () {
+    var usernameInput = document.querySelector('#formUsername');
+    var passwordInput = document.querySelector('#formPassword');
+    var emailInput = document.querySelector('#formEmail');
+    var dobInput = document.querySelector('#formBirth');
+
+    function validateUsername() {
+      var value = usernameInput.value;
+      var reg = /\w{5,}/;
+
+      if (!value) {
+        showErrorMessage(usernameInput, 'Username is required.');
+        return false;
+      }
+
+      if (!reg.test(value)) {
+        showErrorMessage(usernameInput, 'Username must contain at least 5 alphanumeric characters.');
+        return false;
+      }
+
+      showErrorMessage(usernameInput, null);
+      return true;
+    }
+
+    function validatePassword() {
+      var value = passwordInput.value;
+
+      if (!value) {
+        showErrorMessage(passwordInput, 'Please provide your password.');
+        return false;
+      }
+
+      showErrorMessage(passwordInput, null);
+      return true;
+    }
+
+    function validateEmail() {
+      var value = emailInput.value;
+      var reg = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+
+      if (!value) {
+        showErrorMessage(emailInput, 'Email is required.');
+        return false;
+      }
+
+      if (!reg.test(value)) {
+        showErrorMessage(emailInput, 'Invalid mail pattern.');
+        return false;
+      }
+
+      showErrorMessage(emailInput, null);
+      return true;
+    }
+
+    function validateDob() {
+      var value = dobInput.value;
+
+      if (!value instanceof Date) {
+        showErrorMessage(dobInput, 'Please enter a valid date.');
+        return false;
+      }
+
+      showErrorMessage(dobInput, null);
+      return true;
+    }
+
+    function showErrorMessage(input, message) {
+      var container = input.parentElement;
+      var error = container.querySelector('.error-message');
+
+      if (error) {
+        container.removeChild(error);
+      }
+
+      if (message) {
+        var _error = document.createElement('div');
+
+        _error.classList.add('error-message');
+
+        _error.innerText = message;
+        container.appendChild(_error);
+      }
+    }
+
+    usernameInput.oninput = validateUsername;
+    passwordInput.oninput = validatePassword;
+    emailInput.oninput = validateEmail;
+    dobInput.onchange = validateDob;
+  });
 
   var handleCancel = function handleCancel() {
     setUsername(localStorage.getItem('username'));
@@ -52202,6 +52447,16 @@ function ProfileView(props) {
     }).catch(function (error) {
       console.error(error);
     });
+  }; //toggle pw visibility
+
+
+  var changeState = function changeState() {
+    var oldState = type;
+    var isTextOrHide = oldState === 'password';
+    var newState = isTextOrHide ? 'text' : 'password';
+    var newWord = isTextOrHide ? 'Hide' : 'Show';
+    setType(newState);
+    setWord(newWord);
   };
 
   return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Container, {
@@ -52248,7 +52503,10 @@ function ProfileView(props) {
   }, "Profile"))), _react.default.createElement(_reactBootstrap.Row, {
     lg: 2,
     className: ""
-  }, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form, {
+  }, _react.default.createElement(_reactBootstrap.Col, {
+    xs: 8
+  }, _react.default.createElement(_reactBootstrap.Form, {
+    noValidate: true,
     className: "update-form",
     onSubmit: updateUser
   }, _react.default.createElement(_reactBootstrap.Form.Group, {
@@ -52278,15 +52536,17 @@ function ProfileView(props) {
     column: true,
     md: 3
   }, "Password"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
-    type: "password",
+    type: type,
     placeholder: "Set a new Password",
     name: "password",
     className: "form-control-profile",
     onChange: function onChange(e) {
       return setPassword(e.target.value);
-    },
-    pattern: ".{1,}"
-  }))), _react.default.createElement(_reactBootstrap.Form.Group, {
+    }
+  }), _react.default.createElement("span", {
+    className: "password-trigger",
+    onClick: changeState
+  }, word))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formEmail"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
@@ -52305,6 +52565,7 @@ function ProfileView(props) {
     pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
   }))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
+    className: "last-form-row",
     controlId: "formBirth"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
     className: "form-label-profile",
@@ -52332,7 +52593,8 @@ function ProfileView(props) {
     className: "btn-col"
   }, _react.default.createElement(_reactBootstrap.Button, {
     variant: "primary",
-    type: "submit"
+    type: "submit",
+    className: "btn-update"
   }, _react.default.createElement("div", {
     className: "show",
     style: {
@@ -52361,7 +52623,7 @@ function ProfileView(props) {
       key: movie._id,
       className: "mb-4 "
     }, _react.default.createElement(_reactBootstrap.Card, {
-      className: "fav-card"
+      className: "fav-card mx-auto"
     }, _react.default.createElement(_reactBootstrap.Card.Header, null, _react.default.createElement(_reactBootstrap.Card.Title, null, movie.Title)), _react.default.createElement(_reactBootstrap.Card.Body, null, _react.default.createElement(_reactBootstrap.Card.Img, {
       variant: "top",
       src: movie.ImagePath
@@ -52381,7 +52643,7 @@ ProfileView.propTypes = {
   onLogout: _propTypes.default.func.isRequired,
   onUpdate: _propTypes.default.func.isRequired
 };
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","axios":"../node_modules/axios/index.js","../../../public/img/arrow.svg":"../public/img/arrow.svg","../../../public/img/log-out.svg":"../public/img/log-out.svg","./profile-view.scss":"components/profile-view/profile-view.scss","react-bootstrap/esm/Toast":"../node_modules/react-bootstrap/esm/Toast.js"}],"components/main-view/main-view.scss":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","axios":"../node_modules/axios/index.js","../../../public/img/arrow.svg":"../public/img/arrow.svg","../../../public/img/log-out.svg":"../public/img/log-out.svg","./profile-view.scss":"components/profile-view/profile-view.scss"}],"components/main-view/main-view.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -52596,10 +52858,11 @@ var MainView = /*#__PURE__*/function (_React$Component) {
           movies = _this$state.movies,
           user = _this$state.user,
           filter = _this$state.filter,
-          sorted = _this$state.sorted;
+          sorted = _this$state.sorted; // list of filtered movies non case-sensitive!
+
       var movieFilter = movies.filter(function (movie) {
         return movie.Title.toLowerCase().includes(filter.toLowerCase());
-      });
+      }); // sort functionality (alphabetically)
 
       if (sorted) {
         movieFilter.sort(function (a, b) {
@@ -52642,7 +52905,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
             type: "text",
             value: _this3.state.filter,
             placeholder: "filter movies",
-            className: "mr-sm-2",
+            className: "mr-2",
             onChange: function onChange(e) {
               _this3.setState({
                 filter: e.target.value

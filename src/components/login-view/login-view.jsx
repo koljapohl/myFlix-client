@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row, Form, Button } from 'react-bootstrap/';
 import axios from 'axios';
@@ -15,11 +15,16 @@ export function LoginView( props ) {
 
   const handleSubmit = ( e ) => {
     e.preventDefault();
-    let form = document.querySelector( '.login-form' );
-    let usernameInput = document.querySelector( '#formUsername' );
-    let passwordInput = document.querySelector( '#formPassword' );
-
-    if ( validateForm() ) {
+    let error = document.querySelector( '.error-message' );
+    if ( error ) {
+      let container = document.querySelector( '.btn-login' ).parentElement;
+      let note = document.createElement( 'div' );
+      note.classList.add( 'note-message' );
+      note.innerText = `No login possible due to form errors. \rPlease rectify your inputs.`;
+      container.appendChild( note );
+      setTimeout( function () { container.removeChild( note ) }, 4000 );
+      return false;
+    } else {
       console.log( username, password );
       /* send request to the server for authentication */
       axios.post( 'https://myflix-kp.herokuapp.com/login', {},
@@ -36,7 +41,13 @@ export function LoginView( props ) {
         .catch( e => {
           console.error( 'no such user' );
         } );
+      return true;
     }
+  };
+
+  useEffect( () => {
+    let usernameInput = document.querySelector( '#formUsername' );
+    let passwordInput = document.querySelector( '#formPassword' );
 
     function validateUsername() {
       let value = usernameInput.value;
@@ -45,27 +56,29 @@ export function LoginView( props ) {
         showErrorMessage( usernameInput, 'Username is required.' );
         return false;
       }
-      // if(value.length <=4) {
-      //   showErrorMessage(usernameInput, 'Username must contain at least 5 characters.');
-      // }
       if ( !reg.test( value ) ) {
         showErrorMessage( usernameInput, 'Username must contain at least 5 alphanumeric characters.' );
+        return false;
       }
+      showErrorMessage( usernameInput, null );
+      return true;
     }
-    function validateForm() {
-      let isValidUsername = validateUsername();
-      //let isValidPassword = validatePassword();
-      // let isValidEmail = validateEmail();
-      // let isValidDob = validateDob();
-      return isValidUsername //&& isValidPassword;
+    function validatePassword() {
+      let value = passwordInput.value;
+      if ( !value ) {
+        showErrorMessage( passwordInput, 'Please provide your password.' );
+        return false;
+      }
+      showErrorMessage( passwordInput, null );
+      return true;
     }
+
     function showErrorMessage( input, message ) {
       let container = input.parentElement;
       let error = container.querySelector( '.error-message' );
       if ( error ) {
         container.removeChild( error );
       }
-
       if ( message ) {
         let error = document.createElement( 'div' );
         error.classList.add( 'error-message' );
@@ -73,17 +86,9 @@ export function LoginView( props ) {
         container.appendChild( error );
       }
     }
-
     usernameInput.oninput = validateUsername;
-    form.addEventListener( 'submit', ( e ) => {
-      e.preventDefault();
-
-      if ( validateForm() ) {
-        handleSubmit();
-      }
-    } );
-  };
-
+    passwordInput.oninput = validatePassword;
+  } );
 
   /* switches to registration form for new users */
   const swapView = ( e ) => {
@@ -109,7 +114,7 @@ export function LoginView( props ) {
             <Col>
               <Form noValidate className="login-form" onSubmit={handleSubmit}>
                 <Form.Group as={Row} controlId="formUsername">
-                  <Form.Label className="form-label-login" column sm={2} md={3}>Username</Form.Label>
+                  <Form.Label className="form-label-login" column sm={2} md={3}>Username*</Form.Label>
                   <Col>
                     <Form.Control
                       type="text"
@@ -119,35 +124,28 @@ export function LoginView( props ) {
                       required
                       className="form-control-login"
                       onChange={e => setUsername( e.target.value )}
-                      pattern='[a-zA-Z\d]{5,}'
                     />
-                    <Form.Control.Feedback type="invalid">
-                      A Username is required and must at least contain 5 characters.
-                    </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formPassword">
-                  <Form.Label className="form-label-login" column sm={2} md={3}>Password</Form.Label>
+                  <Form.Label className="form-label-login" column sm={2} md={3}>Password*</Form.Label>
                   <Col>
                     <Form.Control
                       type={type}
                       value={password}
                       placeholder="Password"
                       name="password"
-                      required
                       className="form-control-login"
                       onChange={e => setPassword( e.target.value )}
                     />
                     <span className="password-trigger" onClick={changeState}>{word}</span>
-                    <Form.Control.Feedback type="invalid">
-                      Password is required.
-                </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <Row className="my-4">
                   <Col>
                     <Button
                       block
+                      className="btn-login"
                       variant="primary"
                       type="submit"
                     >Log In</Button>
