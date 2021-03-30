@@ -2,7 +2,11 @@ import React from 'react';
 import axios from 'axios';
 import { Row, Col, Navbar, Nav, Button, Form } from 'react-bootstrap/';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+import { setMovies } from '../../actions/actions';
+
+import MoviesList from '../movies-list/movies-list';
 import { RegistrationView } from '../registration-view/registration-view';
 import { LoginView } from '../login-view/login-view';
 import { MovieCard } from '../movie-card/movie-card';
@@ -14,7 +18,7 @@ import { ProfileView } from '../profile-view/profile-view';
 import logout from '../../../public/img/log-out.svg'
 import './main-view.scss';
 
-export class MainView extends React.Component {
+class MainView extends React.Component {
   constructor() {
     super();
     // Inital state is set to null
@@ -110,9 +114,7 @@ export class MainView extends React.Component {
       headers: { Authorization: `Bearer ${token}` }
     } )
       .then( response => {
-        this.setState( {
-          movies: response.data
-        } );
+        this.props.setMovies( response.data );
       } )
       .catch( function ( error ) {
         console.log( error );
@@ -135,7 +137,8 @@ export class MainView extends React.Component {
   }
 
   render() {
-    const { movies, user, filter, sorted } = this.state;
+    const { movies } = this.props;
+    const { user, filter, sorted } = this.state;
     // list of filtered movies non case-sensitive!
     const movieFilter = movies.filter( movie => movie.Title.toLowerCase().includes( filter.toLowerCase() ) );
     // sort functionality (alphabetically)
@@ -200,17 +203,10 @@ export class MainView extends React.Component {
                 </Col>
               </Row>
               <Row className="px-5 py-3">
-                {movieFilter.map( movie => (
-                  <Col className="pb-3" key={movie._id} xs={12} sm={6} md={4} lg={3} xl={2}>
-                    <MovieCard
-                      key={movie._id}
-                      movie={movie}
-                    />
-                  </Col>
-                ) )}
+                <MoviesList movies={movies} />
               </Row>
             </React.Fragment>
-          )
+          );
         }} />
 
         <Route exact path="/register" render={() => {
@@ -249,3 +245,9 @@ export class MainView extends React.Component {
     );
   }
 }
+
+let mapStateToProps = state => {
+  return { movies: state.movies }
+}
+
+export default connect( mapStateToProps, { setMovies } )( MainView );
