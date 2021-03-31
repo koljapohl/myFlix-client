@@ -4,12 +4,11 @@ import { Row, Col, Navbar, Nav, Button, Form } from 'react-bootstrap/';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { setMovies } from '../../actions/actions';
+import { setMovies, setUser } from '../../actions/actions';
 
 import MoviesList from '../movies-list/movies-list';
 import { RegistrationView } from '../registration-view/registration-view';
 import { LoginView } from '../login-view/login-view';
-import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
 import { GenreView } from '../genre-view/genre-view';
 import { DirectorView } from '../director-view/director-view';
@@ -56,15 +55,7 @@ class MainView extends React.Component {
   that *particular user**/
   onLoggedIn( authData ) {
     console.log( authData );
-    this.setState( {
-      user: {
-        username: authData.user.Username,
-        password: authData.user.Password,
-        email: authData.user.Email,
-        dob: authData.user.Birthday,
-        favoriteMovies: authData.user.FavoriteMovies
-      }
-    } );
+    this.props.setUser( authData.user );
 
     localStorage.setItem( 'favoriteMovies', JSON.stringify( authData.user.FavoriteMovies ) );
     localStorage.setItem( 'token', authData.token );
@@ -137,8 +128,8 @@ class MainView extends React.Component {
   }
 
   render() {
-    const { movies } = this.props;
-    const { user, filter, sorted } = this.state;
+    const { movies, user } = this.props;
+    const { filter, sorted } = this.state;
     // list of filtered movies non case-sensitive!
     const movieFilter = movies.filter( movie => movie.Title.toLowerCase().includes( filter.toLowerCase() ) );
     // sort functionality (alphabetically)
@@ -161,7 +152,7 @@ class MainView extends React.Component {
     return (
       <Router>
         <Route exact path={["/", "/login"]} render={() => {
-          if ( !user.username ) return (
+          if ( !user.Username ) return (
             <LoginView onLoggedIn={data => this.onLoggedIn( data )} />
           );
           return (
@@ -247,7 +238,10 @@ class MainView extends React.Component {
 }
 
 let mapStateToProps = state => {
-  return { movies: state.movies }
+  return {
+    movies: state.movies,
+    user: state.user
+  }
 }
 
-export default connect( mapStateToProps, { setMovies } )( MainView );
+export default connect( mapStateToProps, { setMovies, setUser } )( MainView );

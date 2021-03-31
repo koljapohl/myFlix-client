@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import {
   SET_MOVIES,
   SET_FILTER,
-  LOGIN_USER,
+  SET_USER,
   LOGOUT_USER,
   ADD_USER,
   UPDATE_USER,
@@ -30,9 +30,9 @@ function movies( state = [], action ) {
       return state;
   }
 }
-function login( state = '', action ) {
+function user( state = '', action ) {
   switch ( action.type ) {
-    case LOGIN_USER:
+    case SET_USER:
       return action.value;
     default:
       return state;
@@ -42,7 +42,7 @@ function login( state = '', action ) {
 const moviesApp = combineReducers( {
   visibilityFilter,
   movies,
-  login
+  user
 } );
 
 export default moviesApp;
