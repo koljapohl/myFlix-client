@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Nav, Navbar, Container } from 'react-bootstrap';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { MovieCard } from '../movie-card/movie-card';
 

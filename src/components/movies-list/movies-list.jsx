@@ -30,8 +30,6 @@ function MoviesList( props ) {
       }
       return 0;
     } );
-  } else {
-    filteredMovies = movies;
   }
 
   // filter functionality
@@ -42,8 +40,8 @@ function MoviesList( props ) {
   if ( !movies ) return <div className="main-view" />;
 
   return ( <React.Fragment>
-    <Row>
-      <Col className="mx-3">
+    <Row className="mb-3">
+      <Col className="ml-3">
         <Button
           type="button"
           variant="primary"
@@ -51,8 +49,8 @@ function MoviesList( props ) {
           Sort
         </Button>
       </Col>
-      <Col className="filter-input mx-3 mb-3" xs={5} sm={4} md={3}>
-        <VisibilityFilterInput />
+      <Col className="filter-input ml-auto mr-3" xs={5} sm={4} md={3}>
+        <VisibilityFilterInput visibilityFilter={visibilityFilter} />
       </Col>
     </Row>
     {filteredMovies.map( m =>
@@ -68,6 +66,7 @@ function MoviesList( props ) {
 export default connect( mapStateToProps, { setSort } )( MoviesList );
 
 MoviesList.propTypes = {
+  movies: PropTypes.array,
   visibilityFilter: PropTypes.string,
   setSort: PropTypes.func
 }

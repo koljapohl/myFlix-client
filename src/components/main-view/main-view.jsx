@@ -10,8 +10,8 @@ import {
 } from '../../actions/actions';
 
 import MoviesList from '../movies-list/movies-list';
-import { RegistrationView } from '../registration-view/registration-view';
-import { LoginView } from '../login-view/login-view';
+import RegistrationView from '../registration-view/registration-view';
+import LoginView from '../login-view/login-view';
 import { MovieView } from '../movie-view/movie-view';
 import { GenreView } from '../genre-view/genre-view';
 import { DirectorView } from '../director-view/director-view';
@@ -25,15 +25,13 @@ class MainView extends React.Component {
     super();
     // Inital state is set to null
     this.state = {
-      movies: [],
       user: {
         username: null,
         password: null,
         email: null,
         dob: null,
         favoriteMovies: []
-      },
-      sorted: false
+      }
     };
   }
 
@@ -69,21 +67,8 @@ class MainView extends React.Component {
   //when user logs out its localStorage keys will be deleted
   onLogout() {
     localStorage.clear();
-    this.setState( {
-      user: {
-        username: null
-      }
-    } );
+    this.props.setUser( {} );
     window.open( '/', '_self' );
-  }
-
-  onRegistration( uname ) {
-    this.setState( {
-      user: {
-        username: uname
-      }
-    } );
-    localStorage.setItem( 'username', uname );
   }
 
   onUpdate( data ) {
@@ -121,22 +106,15 @@ class MainView extends React.Component {
     } );
   }
 
-  toggleSort() {
-    this.setState( ( currentState ) => ( {
-      sorted: !currentState.sorted
-    } ) );
-  }
-
   render() {
     const { movies, user } = this.props;
-    const { filter, sorted } = this.state;
-
+    let accessToken = localStorage.getItem( 'token' );
     /* If there is no user, the LoginView is rendered. If there is a logged in user,
     the user details are *passed as a prop to the LoginView**/
     return (
       <Router>
         <Route exact path={["/", "/login"]} render={() => {
-          if ( !user.Username ) return (
+          if ( !accessToken ) return (
             <LoginView onLoggedIn={data => this.onLoggedIn( data )} />
           );
           return (
@@ -167,7 +145,7 @@ class MainView extends React.Component {
         }} />
 
         <Route exact path="/register" render={() => {
-          return <RegistrationView onRegistration={( username ) => this.onRegistration( username )} />;
+          return <RegistrationView />;
         }} />
 
         <Route path="/movies/:movieId"

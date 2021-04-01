@@ -2,16 +2,22 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row, Form, Button } from 'react-bootstrap/';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
+import { setUser, togglePw } from '../../actions/actions';
 import './login-view.scss';
 
-export function LoginView( props ) {
+const mapStateToProps = state => {
+  const { user, tglpw } = state;
+  return { user, tglpw };
+}
+
+function LoginView( props ) {
   //if a user just registered, he'll be send to login for entering password so myFlix will obtain its jwt properly,
   //therefore its username will be displayed inside corresponding input field
+  const { user, tglpw } = props;
   const [username, setUsername] = useState( localStorage.getItem( 'username' ) ? localStorage.getItem( 'username' ) : '' );
   const [password, setPassword] = useState( '' );
-  const [type, setType] = useState( 'password' );
-  const [word, setWord] = useState( 'Show' );
 
   const handleSubmit = ( e ) => {
     e.preventDefault();
@@ -25,13 +31,13 @@ export function LoginView( props ) {
       setTimeout( function () { container.removeChild( note ) }, 4000 );
       return false;
     } else {
-      console.log( username, password );
+      console.log( user.Username, user.Password );
       /* send request to the server for authentication */
       axios.post( 'https://myflix-kp.herokuapp.com/login', {},
         {
           params: {
-            Username: username,
-            Password: password
+            Username: user.Username,
+            Password: user.Password
           }
         } )
         .then( response => {
@@ -97,12 +103,12 @@ export function LoginView( props ) {
   }
 
   const changeState = () => {
-    var oldState = type;
+    var oldState = tglpw.type;
     var isTextOrHide = ( oldState === 'password' );
     var newState = ( isTextOrHide ) ? 'text' : 'password';
     var newWord = ( isTextOrHide ) ? 'Hide' : 'Show';
-    setType( newState );
-    setWord( newWord );
+    props.togglePw( { ...tglpw, type: newState } );
+    props.togglePw( { ...tglpw, word: newWord } );
   }
 
   return (
@@ -120,10 +126,10 @@ export function LoginView( props ) {
                       type="text"
                       placeholder="Username"
                       name='username'
-                      value={username}
+                      value={user.Username}
                       required
                       className="form-control-login"
-                      onChange={e => setUsername( e.target.value )}
+                      onChange={e => props.setUser( { ...user, Username: e.target.value } )}
                     />
                   </Col>
                 </Form.Group>
@@ -131,14 +137,14 @@ export function LoginView( props ) {
                   <Form.Label className="form-label-login" column sm={2} md={3}>Password*</Form.Label>
                   <Col>
                     <Form.Control
-                      type={type}
-                      value={password}
+                      type={tglpw.type}
+                      value={user.Password}
                       placeholder="Password"
                       name="password"
                       className="form-control-login"
-                      onChange={e => setPassword( e.target.value )}
+                      onChange={e => props.setUser( { ...user, Password: e.target.value } )}
                     />
-                    <span className="password-trigger" onClick={changeState}>{word}</span>
+                    <span className="password-trigger" onClick={changeState}>{tglpw.word}</span>
                   </Col>
                 </Form.Group>
                 <Row className="my-4">
@@ -165,6 +171,20 @@ export function LoginView( props ) {
   );
 }
 
+export default connect( mapStateToProps, { setUser, togglePw } )( LoginView );
+
 LoginView.propTypes = {
   onLoggedIn: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  user: PropTypes.shape( {
+    Username: PropTypes.string,
+    Password: PropTypes.string,
+    Email: PropTypes.string,
+    Dob: PropTypes.Date
+  } ),
+  tglpw: PropTypes.shape( {
+    type: PropTypes.string,
+    word: PropTypes.string
+  } ),
+  togglePw: PropTypes.func.isRequired
 };

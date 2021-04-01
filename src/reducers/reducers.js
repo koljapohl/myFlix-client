@@ -4,8 +4,6 @@ import {
   SET_MOVIES,
   SET_FILTER,
   SET_USER,
-  LOGOUT_USER,
-  ADD_USER,
   UPDATE_USER,
   UNREG_USER,
   ADD_FAV,
@@ -30,7 +28,7 @@ function movies( state = [], action ) {
       return state;
   }
 }
-function user( state = '', action ) {
+function user( state = {}, action ) {
   switch ( action.type ) {
     case SET_USER:
       return action.value;
@@ -46,12 +44,24 @@ function sort( state = false, action ) {
       return state;
   }
 }
+function tglpw( state = {
+  type: 'password',
+  word: 'Show'
+}, action ) {
+  switch ( action.type ) {
+    case TOGGLE_PW:
+      return action.value;
+    default:
+      return state;
+  }
+}
 
 const moviesApp = combineReducers( {
   visibilityFilter,
   movies,
   user,
-  sort
+  sort,
+  tglpw
 } );
 
 export default moviesApp;

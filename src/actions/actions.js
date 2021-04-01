@@ -2,8 +2,6 @@
 export const SET_MOVIES = 'SET_MOVIES';
 export const SET_FILTER = 'SET_FILTER';
 export const SET_USER = 'SET_USER';
-export const LOGOUT_USER = 'LOGOUT_USER';
-export const ADD_USER = 'ADD_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const UNREG_USER = 'UNREG_USER';
 export const ADD_FAV = 'ADD_FAV';
@@ -20,12 +18,6 @@ export function setFilter( value ) {
 }
 export function setUser( value ) {
   return { type: SET_USER, value };
-}
-export function logoutUser( value ) {
-  return { type: LOGOUT_USER, value };
-}
-export function addUser( value ) {
-  return { type: ADD_USER, value };
 }
 export function updateUser( value ) {
   return { type: UPDATE_USER, value };

@@ -53316,15 +53316,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.setMovies = setMovies;
 exports.setFilter = setFilter;
 exports.setUser = setUser;
-exports.logoutUser = logoutUser;
-exports.addUser = addUser;
 exports.updateUser = updateUser;
 exports.unregUser = unregUser;
 exports.addFav = addFav;
 exports.removeFav = removeFav;
 exports.setSort = setSort;
 exports.togglePw = togglePw;
-exports.TOGGLE_PW = exports.SET_SORT = exports.REMOVE_FAV = exports.ADD_FAV = exports.UNREG_USER = exports.UPDATE_USER = exports.ADD_USER = exports.LOGOUT_USER = exports.SET_USER = exports.SET_FILTER = exports.SET_MOVIES = void 0;
+exports.TOGGLE_PW = exports.SET_SORT = exports.REMOVE_FAV = exports.ADD_FAV = exports.UNREG_USER = exports.UPDATE_USER = exports.SET_USER = exports.SET_FILTER = exports.SET_MOVIES = void 0;
 //define action-types
 var SET_MOVIES = 'SET_MOVIES';
 exports.SET_MOVIES = SET_MOVIES;
@@ -53332,10 +53330,6 @@ var SET_FILTER = 'SET_FILTER';
 exports.SET_FILTER = SET_FILTER;
 var SET_USER = 'SET_USER';
 exports.SET_USER = SET_USER;
-var LOGOUT_USER = 'LOGOUT_USER';
-exports.LOGOUT_USER = LOGOUT_USER;
-var ADD_USER = 'ADD_USER';
-exports.ADD_USER = ADD_USER;
 var UPDATE_USER = 'UPDATE_USER';
 exports.UPDATE_USER = UPDATE_USER;
 var UNREG_USER = 'UNREG_USER';
@@ -53367,20 +53361,6 @@ function setFilter(value) {
 function setUser(value) {
   return {
     type: SET_USER,
-    value: value
-  };
-}
-
-function logoutUser(value) {
-  return {
-    type: LOGOUT_USER,
-    value: value
-  };
-}
-
-function addUser(value) {
-  return {
-    type: ADD_USER,
     value: value
   };
 }
@@ -53462,7 +53442,8 @@ var _default = (0, _reactRedux.connect)(null, {
 
 exports.default = _default;
 visibilityFilterInput.propTypes = {
-  visibilityFilter: _propTypes.default.string
+  visibilityFilter: _propTypes.default.string,
+  setFilter: _propTypes.default.func.isRequired
 };
 },{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","../../actions/actions":"actions/actions.js"}],"../../../../../AppData/Roaming/nvm/v15.8.0/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
@@ -53687,8 +53668,6 @@ function MoviesList(props) {
 
       return 0;
     });
-  } else {
-    filteredMovies = movies;
   } // filter functionality
 
 
@@ -53701,8 +53680,10 @@ function MoviesList(props) {
   if (!movies) return _react.default.createElement("div", {
     className: "main-view"
   });
-  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, null, _react.default.createElement(_reactBootstrap.Col, {
-    className: "mx-3"
+  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, {
+    className: "mb-3"
+  }, _react.default.createElement(_reactBootstrap.Col, {
+    className: "ml-3"
   }, _react.default.createElement(_reactBootstrap.Button, {
     type: "button",
     variant: "primary",
@@ -53710,11 +53691,13 @@ function MoviesList(props) {
       return props.setSort(!sort);
     }
   }, "Sort")), _react.default.createElement(_reactBootstrap.Col, {
-    className: "filter-input mx-3 mb-3",
+    className: "filter-input ml-auto mr-3",
     xs: 5,
     sm: 4,
     md: 3
-  }, _react.default.createElement(_visibilityFilterInput.default, null))), filteredMovies.map(function (m) {
+  }, _react.default.createElement(_visibilityFilterInput.default, {
+    visibilityFilter: visibilityFilter
+  }))), filteredMovies.map(function (m) {
     return _react.default.createElement(_reactBootstrap.Col, {
       className: "pb-3",
       key: m._id
@@ -53731,6 +53714,7 @@ var _default = (0, _reactRedux.connect)(mapStateToProps, {
 
 exports.default = _default;
 MoviesList.propTypes = {
+  movies: _propTypes.default.array,
   visibilityFilter: _propTypes.default.string,
   setSort: _propTypes.default.func
 };
@@ -53745,7 +53729,7 @@ module.hot.accept(reloadCSS);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RegistrationView = RegistrationView;
+exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -53753,7 +53737,15 @@ var _reactBootstrap = require("react-bootstrap");
 
 var _axios = _interopRequireDefault(require("axios"));
 
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _reactRedux = require("react-redux");
+
+var _actions = require("../../actions/actions");
+
 require("./registration-view.scss");
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53761,50 +53753,19 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+var mapStateToProps = function mapStateToProps(state) {
+  var user = state.user,
+      tglpw = state.tglpw;
+  return {
+    user: user,
+    tglpw: tglpw
+  };
+};
 
 function RegistrationView(props) {
-  var _useState = (0, _react.useState)(''),
-      _useState2 = _slicedToArray(_useState, 2),
-      username = _useState2[0],
-      setUsername = _useState2[1];
-
-  var _useState3 = (0, _react.useState)(''),
-      _useState4 = _slicedToArray(_useState3, 2),
-      password = _useState4[0],
-      setPassword = _useState4[1];
-
-  var _useState5 = (0, _react.useState)(''),
-      _useState6 = _slicedToArray(_useState5, 2),
-      email = _useState6[0],
-      setEmail = _useState6[1];
-
-  var _useState7 = (0, _react.useState)('1970-01-01'),
-      _useState8 = _slicedToArray(_useState7, 2),
-      birthday = _useState8[0],
-      setBirthday = _useState8[1];
-
-  var _useState9 = (0, _react.useState)('password'),
-      _useState10 = _slicedToArray(_useState9, 2),
-      type = _useState10[0],
-      setType = _useState10[1];
-
-  var _useState11 = (0, _react.useState)('Show'),
-      _useState12 = _slicedToArray(_useState11, 2),
-      word = _useState12[0],
-      setWord = _useState12[1];
+  var user = props.user,
+      tglpw = props.tglpw;
   /* handles successful registration*/
-
 
   var handleRegister = function handleRegister(e) {
     e.preventDefault();
@@ -53822,14 +53783,17 @@ function RegistrationView(props) {
       return false;
     } else {
       _axios.default.post('https://myflix-kp.herokuapp.com/users', {
-        Username: username,
-        Password: password,
-        Email: email,
-        Birthday: birthday
+        Username: user.Username,
+        Password: user.Password,
+        Email: user.Email,
+        Birthday: user.Birthday
       }).then(function (response) {
         var data = response.data;
         console.log(data);
-        props.onRegistration(username);
+        props.setUser({
+          Username: data.Username
+        });
+        localStorage.setItem('username', data.Username);
         window.open('/', '_self');
       }).catch(function (e) {
         console.log('error registering the user');
@@ -53938,12 +53902,16 @@ function RegistrationView(props) {
 
 
   var changeState = function changeState() {
-    var oldState = type;
+    var oldState = tglpw.type;
     var isTextOrHide = oldState === 'password';
     var newState = isTextOrHide ? 'text' : 'password';
     var newWord = isTextOrHide ? 'Hide' : 'Show';
-    setType(newState);
-    setWord(newWord);
+    props.togglePw(_extends({}, tglpw, {
+      type: newState
+    }));
+    props.togglePw(_extends({}, tglpw, {
+      word: newWord
+    }));
   };
 
   return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, {
@@ -53970,9 +53938,11 @@ function RegistrationView(props) {
     placeholder: "Username",
     name: "username",
     className: "form-control-register",
-    value: username,
+    value: user.Username,
     onChange: function onChange(e) {
-      return setUsername(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Username: e.target.value
+      }));
     }
   }))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
@@ -53982,18 +53952,20 @@ function RegistrationView(props) {
     sm: 2,
     md: 3
   }, "Password*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
-    type: type,
-    value: password,
+    type: tglpw.type,
+    value: user.Password,
     placeholder: "Password",
     name: "password",
     className: "form-control-register",
     onChange: function onChange(e) {
-      return setPassword(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Password: e.target.value
+      }));
     }
   }), _react.default.createElement("span", {
     className: "password-trigger",
     onClick: changeState
-  }, word))), _react.default.createElement(_reactBootstrap.Form.Group, {
+  }, tglpw.word))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formEmail"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
@@ -54002,12 +53974,14 @@ function RegistrationView(props) {
     md: 3
   }, "Email*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
     type: "email",
-    value: email,
+    value: user.Email,
     placeholder: "Email",
     name: "email",
     className: "form-control-register",
     onChange: function onChange(e) {
-      return setEmail(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Email: e.target.value
+      }));
     }
   }))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
@@ -54018,12 +53992,14 @@ function RegistrationView(props) {
     md: 3
   }, "Birthday"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
     type: "date",
-    value: birthday,
+    value: user.Dob,
     placeholder: "Birthday",
     name: "birthday",
     className: "form-control-register",
     onChange: function onChange(e) {
-      return setBirthday(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Dob: e.target.value
+      }));
     }
   }))), _react.default.createElement("span", {
     className: "required-inputs"
@@ -54042,8 +54018,27 @@ function RegistrationView(props) {
   }, "Abort")))))))));
 }
 
-RegistrationView.propTypes = {};
-},{"react":"../node_modules/react/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","./registration-view.scss":"components/registration-view/registration-view.scss"}],"components/login-view/login-view.scss":[function(require,module,exports) {
+var _default = (0, _reactRedux.connect)(mapStateToProps, {
+  setUser: _actions.setUser,
+  togglePw: _actions.togglePw
+})(RegistrationView);
+
+exports.default = _default;
+RegistrationView.propTypes = {
+  setUser: _propTypes.default.func.isRequired,
+  user: _propTypes.default.shape({
+    Username: _propTypes.default.string,
+    Password: _propTypes.default.string,
+    Email: _propTypes.default.string,
+    Dob: _propTypes.default.Date
+  }),
+  tglpw: _propTypes.default.shape({
+    type: _propTypes.default.string,
+    word: _propTypes.default.string
+  }),
+  togglePw: _propTypes.default.func.isRequired
+};
+},{"react":"../node_modules/react/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","prop-types":"../node_modules/prop-types/index.js","react-redux":"../node_modules/react-redux/es/index.js","../../actions/actions":"actions/actions.js","./registration-view.scss":"components/registration-view/registration-view.scss"}],"components/login-view/login-view.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -54054,7 +54049,7 @@ module.hot.accept(reloadCSS);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LoginView = LoginView;
+exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -54064,7 +54059,13 @@ var _reactBootstrap = require("react-bootstrap/");
 
 var _axios = _interopRequireDefault(require("axios"));
 
+var _reactRedux = require("react-redux");
+
+var _actions = require("../../actions/actions");
+
 require("./login-view.scss");
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -54084,8 +54085,21 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+var mapStateToProps = function mapStateToProps(state) {
+  var user = state.user,
+      tglpw = state.tglpw;
+  return {
+    user: user,
+    tglpw: tglpw
+  };
+};
+
 function LoginView(props) {
   //if a user just registered, he'll be send to login for entering password so myFlix will obtain its jwt properly,
+  //therefore its username will be displayed inside corresponding input field
+  var user = props.user,
+      tglpw = props.tglpw;
+
   var _useState = (0, _react.useState)(localStorage.getItem('username') ? localStorage.getItem('username') : ''),
       _useState2 = _slicedToArray(_useState, 2),
       username = _useState2[0],
@@ -54095,16 +54109,6 @@ function LoginView(props) {
       _useState4 = _slicedToArray(_useState3, 2),
       password = _useState4[0],
       setPassword = _useState4[1];
-
-  var _useState5 = (0, _react.useState)('password'),
-      _useState6 = _slicedToArray(_useState5, 2),
-      type = _useState6[0],
-      setType = _useState6[1];
-
-  var _useState7 = (0, _react.useState)('Show'),
-      _useState8 = _slicedToArray(_useState7, 2),
-      word = _useState8[0],
-      setWord = _useState8[1];
 
   var handleSubmit = function handleSubmit(e) {
     e.preventDefault();
@@ -54121,13 +54125,13 @@ function LoginView(props) {
       }, 4000);
       return false;
     } else {
-      console.log(username, password);
+      console.log(user.Username, user.Password);
       /* send request to the server for authentication */
 
       _axios.default.post('https://myflix-kp.herokuapp.com/login', {}, {
         params: {
-          Username: username,
-          Password: password
+          Username: user.Username,
+          Password: user.Password
         }
       }).then(function (response) {
         var data = response.data;
@@ -54203,12 +54207,16 @@ function LoginView(props) {
   };
 
   var changeState = function changeState() {
-    var oldState = type;
+    var oldState = tglpw.type;
     var isTextOrHide = oldState === 'password';
     var newState = isTextOrHide ? 'text' : 'password';
     var newWord = isTextOrHide ? 'Hide' : 'Show';
-    setType(newState);
-    setWord(newWord);
+    props.togglePw(_extends({}, tglpw, {
+      type: newState
+    }));
+    props.togglePw(_extends({}, tglpw, {
+      word: newWord
+    }));
   };
 
   return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, {
@@ -54236,11 +54244,13 @@ function LoginView(props) {
     type: "text",
     placeholder: "Username",
     name: "username",
-    value: username,
+    value: user.Username,
     required: true,
     className: "form-control-login",
     onChange: function onChange(e) {
-      return setUsername(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Username: e.target.value
+      }));
     }
   }))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
@@ -54251,18 +54261,20 @@ function LoginView(props) {
     sm: 2,
     md: 3
   }, "Password*"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
-    type: type,
-    value: password,
+    type: tglpw.type,
+    value: user.Password,
     placeholder: "Password",
     name: "password",
     className: "form-control-login",
     onChange: function onChange(e) {
-      return setPassword(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Password: e.target.value
+      }));
     }
   }), _react.default.createElement("span", {
     className: "password-trigger",
     onClick: changeState
-  }, word))), _react.default.createElement(_reactBootstrap.Row, {
+  }, tglpw.word))), _react.default.createElement(_reactBootstrap.Row, {
     className: "my-4"
   }, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Button, {
     block: true,
@@ -54282,10 +54294,28 @@ function LoginView(props) {
   }, "Sign up here"))))))));
 }
 
+var _default = (0, _reactRedux.connect)(mapStateToProps, {
+  setUser: _actions.setUser,
+  togglePw: _actions.togglePw
+})(LoginView);
+
+exports.default = _default;
 LoginView.propTypes = {
-  onLoggedIn: _propTypes.default.func.isRequired
+  onLoggedIn: _propTypes.default.func.isRequired,
+  setUser: _propTypes.default.func.isRequired,
+  user: _propTypes.default.shape({
+    Username: _propTypes.default.string,
+    Password: _propTypes.default.string,
+    Email: _propTypes.default.string,
+    Dob: _propTypes.default.Date
+  }),
+  tglpw: _propTypes.default.shape({
+    type: _propTypes.default.string,
+    word: _propTypes.default.string
+  }),
+  togglePw: _propTypes.default.func.isRequired
 };
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","./login-view.scss":"components/login-view/login-view.scss"}],"../public/img/arrow.svg":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","react-redux":"../node_modules/react-redux/es/index.js","../../actions/actions":"actions/actions.js","./login-view.scss":"components/login-view/login-view.scss"}],"../public/img/arrow.svg":[function(require,module,exports) {
 module.exports = "/arrow.03af8ce4.svg";
 },{}],"../public/img/log-out.svg":[function(require,module,exports) {
 module.exports = "/log-out.44073d91.svg";
@@ -55300,9 +55330,9 @@ var _actions = require("../../actions/actions");
 
 var _moviesList = _interopRequireDefault(require("../movies-list/movies-list"));
 
-var _registrationView = require("../registration-view/registration-view");
+var _registrationView = _interopRequireDefault(require("../registration-view/registration-view"));
 
-var _loginView = require("../login-view/login-view");
+var _loginView = _interopRequireDefault(require("../login-view/login-view"));
 
 var _movieView = require("../movie-view/movie-view");
 
@@ -55355,15 +55385,13 @@ var MainView = /*#__PURE__*/function (_React$Component) {
     _this = _super.call(this); // Inital state is set to null
 
     _this.state = {
-      movies: [],
       user: {
         username: null,
         password: null,
         email: null,
         dob: null,
         favoriteMovies: []
-      },
-      sorted: false
+      }
     };
     return _this;
   }
@@ -55405,22 +55433,8 @@ var MainView = /*#__PURE__*/function (_React$Component) {
     key: "onLogout",
     value: function onLogout() {
       localStorage.clear();
-      this.setState({
-        user: {
-          username: null
-        }
-      });
+      this.props.setUser({});
       window.open('/', '_self');
-    }
-  }, {
-    key: "onRegistration",
-    value: function onRegistration(uname) {
-      this.setState({
-        user: {
-          username: uname
-        }
-      });
-      localStorage.setItem('username', uname);
     }
   }, {
     key: "onUpdate",
@@ -55462,15 +55476,6 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       });
     }
   }, {
-    key: "toggleSort",
-    value: function toggleSort() {
-      this.setState(function (currentState) {
-        return {
-          sorted: !currentState.sorted
-        };
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
       var _this3 = this;
@@ -55478,9 +55483,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       var _this$props = this.props,
           movies = _this$props.movies,
           user = _this$props.user;
-      var _this$state = this.state,
-          filter = _this$state.filter,
-          sorted = _this$state.sorted;
+      var accessToken = localStorage.getItem('token');
       /* If there is no user, the LoginView is rendered. If there is a logged in user,
       the user details are *passed as a prop to the LoginView**/
 
@@ -55488,7 +55491,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
         exact: true,
         path: ["/", "/login"],
         render: function render() {
-          if (!user.Username) return _react.default.createElement(_loginView.LoginView, {
+          if (!accessToken) return _react.default.createElement(_loginView.default, {
             onLoggedIn: function onLoggedIn(data) {
               return _this3.onLoggedIn(data);
             }
@@ -55527,11 +55530,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
         exact: true,
         path: "/register",
         render: function render() {
-          return _react.default.createElement(_registrationView.RegistrationView, {
-            onRegistration: function onRegistration(username) {
-              return _this3.onRegistration(username);
-            }
-          });
+          return _react.default.createElement(_registrationView.default, null);
         }
       }), _react.default.createElement(_reactRouterDom.Route, {
         path: "/movies/:movieId",
@@ -55654,7 +55653,7 @@ function movies() {
 }
 
 function user() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
@@ -55679,11 +55678,28 @@ function sort() {
   }
 }
 
+function tglpw() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+    type: 'password',
+    word: 'Show'
+  };
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _actions.TOGGLE_PW:
+      return action.value;
+
+    default:
+      return state;
+  }
+}
+
 var moviesApp = (0, _redux.combineReducers)({
   visibilityFilter: visibilityFilter,
   movies: movies,
   user: user,
-  sort: sort
+  sort: sort,
+  tglpw: tglpw
 });
 var _default = moviesApp;
 exports.default = _default;
