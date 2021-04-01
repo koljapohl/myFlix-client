@@ -4,7 +4,10 @@ import { Row, Col, Navbar, Nav, Button, Form } from 'react-bootstrap/';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { setMovies, setUser } from '../../actions/actions';
+import {
+  setMovies,
+  setUser
+} from '../../actions/actions';
 
 import MoviesList from '../movies-list/movies-list';
 import { RegistrationView } from '../registration-view/registration-view';
@@ -30,7 +33,6 @@ class MainView extends React.Component {
         dob: null,
         favoriteMovies: []
       },
-      filter: "",
       sorted: false
     };
   }
@@ -38,14 +40,12 @@ class MainView extends React.Component {
   componentDidMount() {
     let accessToken = localStorage.getItem( 'token' );
     if ( accessToken !== null ) {
-      this.setState( {
-        user: {
-          username: localStorage.getItem( 'username' ),
-          password: localStorage.getItem( 'password' ),
-          email: localStorage.getItem( 'email' ),
-          dob: localStorage.getItem( 'dob' ),
-          favoriteMovies: localStorage.getItem( 'favoriteMovies' )
-        }
+      this.props.setUser( {
+        Username: localStorage.getItem( 'username' ),
+        Password: localStorage.getItem( 'password' ),
+        Email: localStorage.getItem( 'email' ),
+        Dob: localStorage.getItem( 'dob' ),
+        FavoriteMovies: localStorage.getItem( 'favoriteMovies' )
       } );
       this.getMovies( accessToken );
     }
@@ -130,22 +130,6 @@ class MainView extends React.Component {
   render() {
     const { movies, user } = this.props;
     const { filter, sorted } = this.state;
-    // list of filtered movies non case-sensitive!
-    const movieFilter = movies.filter( movie => movie.Title.toLowerCase().includes( filter.toLowerCase() ) );
-    // sort functionality (alphabetically)
-    if ( sorted ) {
-      movieFilter.sort( function ( a, b ) {
-        var nameA = a.Title.toUpperCase();
-        var nameB = b.Title.toUpperCase();
-        if ( nameA < nameB ) {
-          return -1;
-        }
-        if ( nameA > nameB ) {
-          return 1;
-        }
-        return 0;
-      } );
-    }
 
     /* If there is no user, the LoginView is rendered. If there is a logged in user,
     the user details are *passed as a prop to the LoginView**/
@@ -159,14 +143,6 @@ class MainView extends React.Component {
             <React.Fragment>
               <Navbar sticky="top" className="px-5 py-0 mb-2">
                 <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
-                <Form inline>
-                  <Form.Control
-                    type="text"
-                    value={this.state.filter}
-                    placeholder="filter movies"
-                    className="mr-2"
-                    onChange={e => { this.setState( { filter: e.target.value } ) }} />
-                </Form>
                 <Nav className="ml-auto button-wrapper">
                   <Link to={'/users/me'}>
                     <Button
@@ -183,16 +159,6 @@ class MainView extends React.Component {
                   </Button>
                 </Nav>
               </Navbar>
-              <Row className="px-5 my-4">
-                <Col className="">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    onClick={() => this.toggleSort()}>
-                    Sort
-                  </Button>
-                </Col>
-              </Row>
               <Row className="px-5 py-3">
                 <MoviesList movies={movies} />
               </Row>

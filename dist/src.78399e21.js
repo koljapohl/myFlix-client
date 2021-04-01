@@ -53643,6 +53643,8 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
 var _reactRedux = require("react-redux");
 
 var _reactBootstrap = require("react-bootstrap");
@@ -53651,19 +53653,44 @@ var _visibilityFilterInput = _interopRequireDefault(require("../visibility-filte
 
 var _movieCard = require("../movie-card/movie-card");
 
+var _actions = require("../../actions/actions");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
-  var visibilityFilter = state.visibilityFilter;
+  var visibilityFilter = state.visibilityFilter,
+      sort = state.sort;
   return {
-    visibilityFilter: visibilityFilter
+    visibilityFilter: visibilityFilter,
+    sort: sort
   };
 };
 
 function MoviesList(props) {
   var movies = props.movies,
-      visibilityFilter = props.visibilityFilter;
-  var filteredMovies = movies;
+      visibilityFilter = props.visibilityFilter,
+      sort = props.sort;
+  var filteredMovies = movies; // sort functionality (alphabetically)
+
+  if (sort) {
+    filteredMovies.sort(function (a, b) {
+      var nameA = a.Title.toUpperCase();
+      var nameB = b.Title.toUpperCase();
+
+      if (nameA < nameB) {
+        return -1;
+      }
+
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      return 0;
+    });
+  } else {
+    filteredMovies = movies;
+  } // filter functionality
+
 
   if (visibilityFilter !== '') {
     filteredMovies = movies.filter(function (m) {
@@ -53675,22 +53702,39 @@ function MoviesList(props) {
     className: "main-view"
   });
   return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, null, _react.default.createElement(_reactBootstrap.Col, {
+    className: "mx-3"
+  }, _react.default.createElement(_reactBootstrap.Button, {
+    type: "button",
+    variant: "primary",
+    onClick: function onClick() {
+      return props.setSort(!sort);
+    }
+  }, "Sort")), _react.default.createElement(_reactBootstrap.Col, {
     className: "filter-input mx-3 mb-3",
     xs: 5,
     sm: 4,
     md: 3
   }, _react.default.createElement(_visibilityFilterInput.default, null))), filteredMovies.map(function (m) {
-    return _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_movieCard.MovieCard, {
+    return _react.default.createElement(_reactBootstrap.Col, {
+      className: "pb-3",
+      key: m._id
+    }, _react.default.createElement(_movieCard.MovieCard, {
       key: m._id,
       movie: m
     }));
   }));
 }
 
-var _default = (0, _reactRedux.connect)(mapStateToProps)(MoviesList);
+var _default = (0, _reactRedux.connect)(mapStateToProps, {
+  setSort: _actions.setSort
+})(MoviesList);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","../visibility-filter-input/visibility-filter-input":"components/visibility-filter-input/visibility-filter-input.jsx","../movie-card/movie-card":"components/movie-card/movie-card.jsx"}],"components/registration-view/registration-view.scss":[function(require,module,exports) {
+MoviesList.propTypes = {
+  visibilityFilter: _propTypes.default.string,
+  setSort: _propTypes.default.func
+};
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","../visibility-filter-input/visibility-filter-input":"components/visibility-filter-input/visibility-filter-input.jsx","../movie-card/movie-card":"components/movie-card/movie-card.jsx","../../actions/actions":"actions/actions.js"}],"components/registration-view/registration-view.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -55319,7 +55363,6 @@ var MainView = /*#__PURE__*/function (_React$Component) {
         dob: null,
         favoriteMovies: []
       },
-      filter: "",
       sorted: false
     };
     return _this;
@@ -55331,14 +55374,12 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       var accessToken = localStorage.getItem('token');
 
       if (accessToken !== null) {
-        this.setState({
-          user: {
-            username: localStorage.getItem('username'),
-            password: localStorage.getItem('password'),
-            email: localStorage.getItem('email'),
-            dob: localStorage.getItem('dob'),
-            favoriteMovies: localStorage.getItem('favoriteMovies')
-          }
+        this.props.setUser({
+          Username: localStorage.getItem('username'),
+          Password: localStorage.getItem('password'),
+          Email: localStorage.getItem('email'),
+          Dob: localStorage.getItem('dob'),
+          FavoriteMovies: localStorage.getItem('favoriteMovies')
         });
         this.getMovies(accessToken);
       }
@@ -55439,31 +55480,9 @@ var MainView = /*#__PURE__*/function (_React$Component) {
           user = _this$props.user;
       var _this$state = this.state,
           filter = _this$state.filter,
-          sorted = _this$state.sorted; // list of filtered movies non case-sensitive!
-
-      var movieFilter = movies.filter(function (movie) {
-        return movie.Title.toLowerCase().includes(filter.toLowerCase());
-      }); // sort functionality (alphabetically)
-
-      if (sorted) {
-        movieFilter.sort(function (a, b) {
-          var nameA = a.Title.toUpperCase();
-          var nameB = b.Title.toUpperCase();
-
-          if (nameA < nameB) {
-            return -1;
-          }
-
-          if (nameA > nameB) {
-            return 1;
-          }
-
-          return 0;
-        });
-      }
+          sorted = _this$state.sorted;
       /* If there is no user, the LoginView is rendered. If there is a logged in user,
       the user details are *passed as a prop to the LoginView**/
-
 
       return _react.default.createElement(_reactRouterDom.BrowserRouter, null, _react.default.createElement(_reactRouterDom.Route, {
         exact: true,
@@ -55480,19 +55499,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
           }, _react.default.createElement(_reactBootstrap.Navbar.Brand, {
             className: "brand",
             href: "/"
-          }, "myFlix"), _react.default.createElement(_reactBootstrap.Form, {
-            inline: true
-          }, _react.default.createElement(_reactBootstrap.Form.Control, {
-            type: "text",
-            value: _this3.state.filter,
-            placeholder: "filter movies",
-            className: "mr-2",
-            onChange: function onChange(e) {
-              _this3.setState({
-                filter: e.target.value
-              });
-            }
-          })), _react.default.createElement(_reactBootstrap.Nav, {
+          }, "myFlix"), _react.default.createElement(_reactBootstrap.Nav, {
             className: "ml-auto button-wrapper"
           }, _react.default.createElement(_reactRouterDom.Link, {
             to: '/users/me'
@@ -55511,16 +55518,6 @@ var MainView = /*#__PURE__*/function (_React$Component) {
             src: _logOut.default,
             alt: "logout icon"
           })))), _react.default.createElement(_reactBootstrap.Row, {
-            className: "px-5 my-4"
-          }, _react.default.createElement(_reactBootstrap.Col, {
-            className: ""
-          }, _react.default.createElement(_reactBootstrap.Button, {
-            type: "button",
-            variant: "primary",
-            onClick: function onClick() {
-              return _this3.toggleSort();
-            }
-          }, "Sort"))), _react.default.createElement(_reactBootstrap.Row, {
             className: "px-5 py-3"
           }, _react.default.createElement(_moviesList.default, {
             movies: movies
@@ -55669,10 +55666,24 @@ function user() {
   }
 }
 
+function sort() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _actions.SET_SORT:
+      return action.value;
+
+    default:
+      return state;
+  }
+}
+
 var moviesApp = (0, _redux.combineReducers)({
   visibilityFilter: visibilityFilter,
   movies: movies,
-  user: user
+  user: user,
+  sort: sort
 });
 var _default = moviesApp;
 exports.default = _default;
@@ -55785,7 +55796,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54037" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59566" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

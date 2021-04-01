@@ -38,11 +38,20 @@ function user( state = '', action ) {
       return state;
   }
 }
+function sort( state = false, action ) {
+  switch ( action.type ) {
+    case SET_SORT:
+      return action.value;
+    default:
+      return state;
+  }
+}
 
 const moviesApp = combineReducers( {
   visibilityFilter,
   movies,
-  user
+  user,
+  sort
 } );
 
 export default moviesApp;
