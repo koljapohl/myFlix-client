@@ -148,6 +148,7 @@ function ProfileView( props ) {
         headers: { Authorization: `Bearer ${token}` }
       } )
         .then( () => {
+          props.setUser( {} );
           localStorage.clear();
           alert( `We're sorry you're leaving ${user.Username}.` );
           window.open( '/', '_self' );
@@ -361,5 +362,6 @@ ProfileView.propTypes = {
   } ),
   togglePw: PropTypes.func.isRequired,
   setUser: PropTypes.func.isRequired,
-  onLogout: PropTypes.func.isRequired
+  onLogout: PropTypes.func.isRequired,
+  onMovieDel: PropTypes.func.isRequired
 }

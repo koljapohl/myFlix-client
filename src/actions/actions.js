@@ -2,10 +2,10 @@
 export const SET_MOVIES = 'SET_MOVIES';
 export const SET_FILTER = 'SET_FILTER';
 export const SET_USER = 'SET_USER';
-export const UPDATE_USER = 'UPDATE_USER';
-export const UNREG_USER = 'UNREG_USER';
 export const SET_SORT = 'SET_SORT';
 export const TOGGLE_PW = 'TOGGLE_PW';
+export const SET_GENRE = 'SET_GENRE';
+export const SET_DIRECTOR = 'SET_DIRECTOR';
 
 //define action creators
 export function setMovies( value ) {
@@ -28,4 +28,10 @@ export function setSort( value ) {
 }
 export function togglePw( value ) {
   return { type: TOGGLE_PW, value };
+}
+export function setGenre( value ) {
+  return { type: SET_GENRE, value };
+}
+export function setDirector( value ) {
+  return { type: SET_DIRECTOR, value };
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col, Button, Nav, Navbar, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-import { MovieCard } from '../movie-card/movie-card';
+import MovieCard from '../movie-card/movie-card';
 
 import arrow from '../../../public/img/arrow.svg';
 import logout from '../../../public/img/log-out.svg'
@@ -12,7 +12,6 @@ import './genre-view.scss';
 export class GenreView extends React.Component {
   constructor() {
     super();
-
     this.state = {};
   }
 
@@ -97,5 +96,6 @@ GenreView.propTypes = {
     Title: PropTypes.string.isRequired,
     Description: PropTypes.string.isRequired
   } ).isRequired,
+  movies: PropTypes.array,
   onClick: PropTypes.func.isRequired
 }

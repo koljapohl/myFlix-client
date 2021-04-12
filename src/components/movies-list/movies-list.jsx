@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Col, Row, Button } from 'react-bootstrap';
 
 import VisibilityFilterInput from '../visibility-filter-input/visibility-filter-input';
-import { MovieCard } from '../movie-card/movie-card';
+import MovieCard from '../movie-card/movie-card';
 
 import { setSort } from '../../actions/actions';
 
@@ -67,5 +67,6 @@ export default connect( mapStateToProps, { setSort } )( MoviesList );
 MoviesList.propTypes = {
   movies: PropTypes.array,
   visibilityFilter: PropTypes.string,
-  setSort: PropTypes.func
+  setSort: PropTypes.func.isRequired,
+  sort: PropTypes.bool
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import { Row, Container, Navbar, Nav, Button } from 'react-bootstrap/';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -24,15 +25,7 @@ class MainView extends React.Component {
   constructor() {
     super();
     // Inital state is set to null
-    this.state = {
-      user: {
-        username: null,
-        password: null,
-        email: null,
-        dob: null,
-        favoriteMovies: []
-      }
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -130,7 +123,7 @@ class MainView extends React.Component {
           );
         }} />
 
-        <Route exact path="/register" component={RegistrationView} />
+        <Route path="/register" component={RegistrationView} />
 
         <Route path="/movies/:movieId"
           render={( { match } ) => {
@@ -152,7 +145,6 @@ class MainView extends React.Component {
         <Route path="/users/me" render={( { match } ) => {
           return <ProfileView
             onLogout={() => this.onLogout()}
-            // onUpdate={( data ) => this.onUpdate( data )}
             onMovieDel={() => this.onMovieDel()}
             user={user}
             movies={movies} />
@@ -174,3 +166,15 @@ let mapStateToProps = state => {
 }
 
 export default connect( mapStateToProps, { setMovies, setUser } )( MainView );
+
+MainView.propTypes = {
+  movies: PropTypes.array,
+  setMovies: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  user: PropTypes.shape( {
+    Username: PropTypes.string,
+    Password: PropTypes.string,
+    Email: PropTypes.string,
+    Dob: PropTypes.Date
+  } )
+}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col, Button, Nav, Navbar, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-import { MovieCard } from '../movie-card/movie-card';
+import MovieCard from '../movie-card/movie-card';
 
 import arrow from '../../../public/img/arrow.svg';
 import logout from '../../../public/img/log-out.svg'
@@ -99,10 +99,21 @@ export class DirectorView extends React.Component {
 
 DirectorView.propTypes = {
   movie: PropTypes.shape( {
+    ImagePath: PropTypes.string.isRequired,
+    Title: PropTypes.string.isRequired,
+    Description: PropTypes.string.isRequired,
+    Genre: PropTypes.shape( {
+      Title: PropTypes.string.isRequired,
+      Description: PropTypes.string
+    } ).isRequired,
     Director: PropTypes.shape( {
       Name: PropTypes.string.isRequired,
-      Bio: PropTypes.string.isRequired
-    } ).isRequired
-  } ).isRequired,
-  onClick: PropTypes.func.isRequired
+      Bio: PropTypes.string,
+      BirthYear: PropTypes.string
+    } ).isRequired,
+    Featured: PropTypes.bool,
+    _id: PropTypes.string,
+  } ),
+  onClick: PropTypes.func.isRequired,
+  movies: PropTypes.array.isRequired
 }

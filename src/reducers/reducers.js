@@ -4,8 +4,6 @@ import {
   SET_MOVIES,
   SET_FILTER,
   SET_USER,
-  UPDATE_USER,
-  UNREG_USER,
   SET_SORT,
   TOGGLE_PW
 } from '../actions/actions';
@@ -53,7 +51,6 @@ function tglpw( state = {
       return state;
   }
 }
-
 const moviesApp = combineReducers( {
   visibilityFilter,
   movies,

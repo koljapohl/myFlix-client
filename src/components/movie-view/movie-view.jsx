@@ -132,6 +132,13 @@ MovieView.propTypes = {
     } ).isRequired,
     Featured: PropTypes.bool,
     _id: PropTypes.string,
-  } ).isRequired,
-  onClick: PropTypes.func.isRequired
+  } ),
+  onClick: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  user: PropTypes.shape( {
+    Username: PropTypes.string,
+    Password: PropTypes.string,
+    Email: PropTypes.string,
+    Dob: PropTypes.Date
+  } )
 }

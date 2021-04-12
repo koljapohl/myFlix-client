@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import './movie-card.scss';
 
-export class MovieCard extends React.Component {
+export default class MovieCard extends React.Component {
   render() {
     // this is given to MovieCard component by the outer world (MainView)
     const { movie } = this.props;
