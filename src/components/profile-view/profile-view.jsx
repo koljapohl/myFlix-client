@@ -61,13 +61,21 @@ function ProfileView( props ) {
         } )
         .then( response => {
           const data = response.data;
-          props.setUser( data );
+          const input = document.getElementById( 'formPassword' );
+          props.setUser( {
+            ...user,
+            Username: data.Username,
+            Password: data.Password,
+            Email: data.Email,
+            Dob: data.Birthday
+          } );
           console.log( data );
           localStorage.setItem( 'username', data.Username );
           localStorage.setItem( 'password', data.Password );
           localStorage.setItem( 'email', data.Email );
           localStorage.setItem( 'dob', data.Dob );
           alert( 'User has been updated successfully.' );
+          input.value = '';
         } )
         .catch( error => {
           console.log( error );
@@ -138,7 +146,9 @@ function ProfileView( props ) {
       Password: localStorage.getItem( 'password' ),
       Email: localStorage.getItem( 'email' ),
       Dob: localStorage.getItem( 'dob' )
-    } )
+    } );
+    let input = document.getElementById( 'formPassword' );
+    input.value = '';
   }
 
   const onUnregister = () => {
@@ -148,10 +158,10 @@ function ProfileView( props ) {
         headers: { Authorization: `Bearer ${token}` }
       } )
         .then( () => {
-          props.setUser( {} );
           localStorage.clear();
           alert( `We're sorry you're leaving ${user.Username}.` );
           window.open( '/', '_self' );
+          props.setUser( '' );
         } );
     }
   }
@@ -294,16 +304,6 @@ function ProfileView( props ) {
                   <div className="show" style={{ display: "inline" }}>
                     Update
                     </div>
-                  <div style={{ display: "none" }}>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                      Loading...
-                    </div>
                 </Button>
               </Col>
             </Row>
@@ -318,7 +318,7 @@ function ProfileView( props ) {
             </Button>
         </Col>
       </Row>
-      <h4 className="mb-4">Favorite Movies</h4>
+      <h4 className="my-4">Favorite Movies</h4>
       <Row className="favorite-movies">
         {favoriteMovieList.map( movie => (
           <Col key={movie._id} className="mb-4 ">
@@ -330,13 +330,22 @@ function ProfileView( props ) {
                 <Card.Img variant="top" src={movie.ImagePath} />
               </Card.Body>
               <Card.Footer>
-                <Button
-                  className=""
-                  onClick={() => { handleUnfav( movie._id ) }}
-                  variant="outline-danger"
-                  type="button">
-                  Remove
+                <Row>
+                  <Col className="mr-auto">
+                    <Link to={`/movies/${movie._id}`}>
+                      <Button variant="link">Open</Button>
+                    </Link>
+                  </Col>
+                  <Col>
+                    <Button
+                      className=""
+                      onClick={() => { handleUnfav( movie._id ) }}
+                      variant="outline-danger"
+                      type="button">
+                      Remove
                     </Button>
+                  </Col>
+                </Row>
               </Card.Footer>
             </Card>
           </Col>

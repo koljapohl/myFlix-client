@@ -66,7 +66,7 @@ export class GenreView extends React.Component {
             </Col>
           </Row>
           <Row className="mb-5">
-            <Col md={8} className="description">
+            <Col className="description">
               {genre.Description}
             </Col>
           </Row>

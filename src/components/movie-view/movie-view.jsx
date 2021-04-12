@@ -83,7 +83,7 @@ class MovieView extends React.Component {
             </Button>
           </Col>
         </Row>
-        <Row className="px-5 content-body">
+        <Row className="px-5 pb-5 content-body">
           <Col className="content-text" md={8}>
             <Row className="align-items-center mb-2">
               <Col xs="auto">Genre:</Col>
@@ -97,7 +97,7 @@ class MovieView extends React.Component {
                 {movie.Director.Name}
               </Link>
             </Row>
-            <Row className="description">
+            <Row className="description mb-3">
               <Col>
                 <h4>Description</h4>{movie.Description}
               </Col>

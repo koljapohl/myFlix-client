@@ -46,7 +46,13 @@ class MainView extends React.Component {
   that *particular user**/
   onLoggedIn( authData ) {
     console.log( authData );
-    this.props.setUser( authData.user );
+    this.props.setUser( {
+      Username: authData.user.Username,
+      Password: authData.user.Password,
+      Email: authData.user.Email,
+      Dob: authData.user.Birthday,
+      FavoriteMovies: authData.user.FavoriteMovies
+    } );
 
     localStorage.setItem( 'favoriteMovies', JSON.stringify( authData.user.FavoriteMovies ) );
     localStorage.setItem( 'token', authData.token );

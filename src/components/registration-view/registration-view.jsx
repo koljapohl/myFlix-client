@@ -35,7 +35,7 @@ function RegistrationView( props ) {
         Username: user.Username,
         Password: user.Password,
         Email: user.Email,
-        Birthday: user.Birthday
+        Birthday: user.Dob
       } )
         .then( response => {
           const data = response.data;

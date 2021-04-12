@@ -24,7 +24,12 @@ function movies( state = [], action ) {
       return state;
   }
 }
-function user( state = {}, action ) {
+function user( state = {
+  Username: localStorage.getItem( 'username' ) ? localStorage.getItem( 'username' ) : '',
+  Password: '',
+  Email: '',
+  Dob: ''
+}, action ) {
   switch ( action.type ) {
     case SET_USER:
       return action.value;

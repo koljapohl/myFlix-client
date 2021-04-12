@@ -53791,7 +53791,7 @@ function RegistrationView(props) {
         Username: user.Username,
         Password: user.Password,
         Email: user.Email,
-        Birthday: user.Birthday
+        Birthday: user.Dob
       }).then(function (response) {
         var data = response.data;
         console.log(data);
@@ -54464,7 +54464,7 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
         variant: "outline-primary",
         type: "button"
       }, "Add to favorites"))), _react.default.createElement(_reactBootstrap.Row, {
-        className: "px-5 content-body"
+        className: "px-5 pb-5 content-body"
       }, _react.default.createElement(_reactBootstrap.Col, {
         className: "content-text",
         md: 8
@@ -54482,7 +54482,7 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
       }, "Director:"), _react.default.createElement(_reactRouterDom.Link, {
         to: "/directors/".concat(movie.Director.Name)
       }, movie.Director.Name)), _react.default.createElement(_reactBootstrap.Row, {
-        className: "description"
+        className: "description mb-3"
       }, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement("h4", null, "Description"), movie.Description))), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement("img", {
         className: "movie-poster",
         src: movie.ImagePath
@@ -54663,7 +54663,6 @@ var GenreView = /*#__PURE__*/function (_React$Component) {
       }, genre.Title))), _react.default.createElement(_reactBootstrap.Row, null, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement("h5", null, "Description"))), _react.default.createElement(_reactBootstrap.Row, {
         className: "mb-5"
       }, _react.default.createElement(_reactBootstrap.Col, {
-        md: 8,
         className: "description"
       }, genre.Description)), _react.default.createElement(_reactBootstrap.Row, {
         className: "mb-3"
@@ -54831,7 +54830,6 @@ var DirectorView = /*#__PURE__*/function (_React$Component) {
       }, _react.default.createElement(_reactBootstrap.Col, null, "Born in ", movie.Director.BirthYear.slice(0, 4))), _react.default.createElement(_reactBootstrap.Row, null, _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement("h5", null, "Biography"))), _react.default.createElement(_reactBootstrap.Row, {
         className: "mb-5"
       }, _react.default.createElement(_reactBootstrap.Col, {
-        md: 8,
         className: "description"
       }, movie.Director.Bio)), _react.default.createElement(_reactBootstrap.Row, {
         className: "mb-3"
@@ -54970,13 +54968,20 @@ function ProfileView(props) {
         }
       }).then(function (response) {
         var data = response.data;
-        props.setUser(data);
+        var input = document.getElementById('formPassword');
+        props.setUser(_extends({}, user, {
+          Username: data.Username,
+          Password: data.Password,
+          Email: data.Email,
+          Dob: data.Birthday
+        }));
         console.log(data);
         localStorage.setItem('username', data.Username);
         localStorage.setItem('password', data.Password);
         localStorage.setItem('email', data.Email);
         localStorage.setItem('dob', data.Dob);
         alert('User has been updated successfully.');
+        input.value = '';
       }).catch(function (error) {
         console.log(error);
       });
@@ -55056,6 +55061,8 @@ function ProfileView(props) {
       Email: localStorage.getItem('email'),
       Dob: localStorage.getItem('dob')
     }));
+    var input = document.getElementById('formPassword');
+    input.value = '';
   };
 
   var onUnregister = function onUnregister() {
@@ -55067,10 +55074,10 @@ function ProfileView(props) {
           Authorization: "Bearer ".concat(token)
         }
       }).then(function () {
-        props.setUser({});
         localStorage.clear();
         alert("We're sorry you're leaving ".concat(user.Username, "."));
         window.open('/', '_self');
+        props.setUser('');
       });
     }
   };
@@ -55259,22 +55266,12 @@ function ProfileView(props) {
     style: {
       display: "inline"
     }
-  }, "Update"), _react.default.createElement("div", {
-    style: {
-      display: "none"
-    }
-  }, _react.default.createElement(_reactBootstrap.Spinner, {
-    as: "span",
-    animation: "border",
-    size: "sm",
-    role: "status",
-    "aria-hidden": "true"
-  }), "Loading...")))))), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Button, {
+  }, "Update")))))), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Button, {
     variant: "danger",
     type: "button",
     onClick: onUnregister
   }, "UNREGISTER!"))), _react.default.createElement("h4", {
-    className: "mb-4"
+    className: "my-4"
   }, "Favorite Movies"), _react.default.createElement(_reactBootstrap.Row, {
     className: "favorite-movies"
   }, favoriteMovieList.map(function (movie) {
@@ -55286,14 +55283,20 @@ function ProfileView(props) {
     }, _react.default.createElement(_reactBootstrap.Card.Header, null, _react.default.createElement(_reactBootstrap.Card.Title, null, movie.Title)), _react.default.createElement(_reactBootstrap.Card.Body, null, _react.default.createElement(_reactBootstrap.Card.Img, {
       variant: "top",
       src: movie.ImagePath
-    })), _react.default.createElement(_reactBootstrap.Card.Footer, null, _react.default.createElement(_reactBootstrap.Button, {
+    })), _react.default.createElement(_reactBootstrap.Card.Footer, null, _react.default.createElement(_reactBootstrap.Row, null, _react.default.createElement(_reactBootstrap.Col, {
+      className: "mr-auto"
+    }, _react.default.createElement(_reactRouterDom.Link, {
+      to: "/movies/".concat(movie._id)
+    }, _react.default.createElement(_reactBootstrap.Button, {
+      variant: "link"
+    }, "Open"))), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Button, {
       className: "",
       onClick: function onClick() {
         handleUnfav(movie._id);
       },
       variant: "outline-danger",
       type: "button"
-    }, "Remove"))));
+    }, "Remove"))))));
   })));
 }
 
@@ -55430,7 +55433,13 @@ var MainView = /*#__PURE__*/function (_React$Component) {
     key: "onLoggedIn",
     value: function onLoggedIn(authData) {
       console.log(authData);
-      this.props.setUser(authData.user);
+      this.props.setUser({
+        Username: authData.user.Username,
+        Password: authData.user.Password,
+        Email: authData.user.Email,
+        Dob: authData.user.Birthday,
+        FavoriteMovies: authData.user.FavoriteMovies
+      });
       localStorage.setItem('favoriteMovies', JSON.stringify(authData.user.FavoriteMovies));
       localStorage.setItem('token', authData.token);
       localStorage.setItem('username', authData.user.Username);
@@ -55658,7 +55667,12 @@ function movies() {
 }
 
 function user() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+    Username: localStorage.getItem('username') ? localStorage.getItem('username') : '',
+    Password: '',
+    Email: '',
+    Dob: ''
+  };
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
