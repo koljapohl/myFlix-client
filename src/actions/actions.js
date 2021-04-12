@@ -4,8 +4,6 @@ export const SET_FILTER = 'SET_FILTER';
 export const SET_USER = 'SET_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const UNREG_USER = 'UNREG_USER';
-export const ADD_FAV = 'ADD_FAV';
-export const REMOVE_FAV = 'REMOVE_FAV';
 export const SET_SORT = 'SET_SORT';
 export const TOGGLE_PW = 'TOGGLE_PW';
 
@@ -24,12 +22,6 @@ export function updateUser( value ) {
 }
 export function unregUser( value ) {
   return { type: UNREG_USER, value };
-}
-export function addFav( value ) {
-  return { type: ADD_FAV, value };
-}
-export function removeFav( value ) {
-  return { type: REMOVE_FAV, value };
 }
 export function setSort( value ) {
   return { type: SET_SORT, value };

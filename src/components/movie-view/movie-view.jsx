@@ -1,38 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Navbar, Nav, Row, Col, Button } from 'react-bootstrap/';
+import { Navbar, Nav, Row, Col, Button, Container } from 'react-bootstrap/';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
+import { setUser } from '../../actions/actions';
 import arrow from '../../../public/img/arrow.svg';
 import logout from '../../../public/img/log-out.svg'
 import './movie-view.scss';
 
-export class MovieView extends React.Component {
+class MovieView extends React.Component {
   constructor() {
     super();
-
-    this.state = {
-      favorites: localStorage.getItem( 'favoriteMovies' ) ? JSON.parse( localStorage.getItem( 'favoriteMovies' ) ) : []
-    };
+    this.state = {};
   }
 
   handleFavorite( movie ) {
     let token = localStorage.getItem( 'token' );
-    let user = localStorage.getItem( 'username' );
-    if ( this.state.favorites.indexOf( movie._id ) > -1 ) {
+    if ( this.props.user.FavoriteMovies.indexOf( movie._id ) > -1 ) {
       alert( `${movie.Title} is already one of your favorites.` );
     } else {
-      axios.post( `https://myflix-kp.herokuapp.com/users/${user}/movies/${movie._id}`, {},
+      axios.post( `https://myflix-kp.herokuapp.com/users/${this.props.user.Username}/movies/${movie._id}`, {},
         {
           headers: { Authorization: `Bearer ${token}` }
         } )
         .then( () => {
-          this.setState( {
-            favorites: [movie._id, ...this.state.favorites]
+          this.props.setUser( {
+            ...this.props.user,
+            FavoriteMovies: [movie._id, ...this.props.user.FavoriteMovies]
           } );
           alert( `${movie.Title} was successfully added to your favorites list.` );
-          localStorage.setItem( 'favoriteMovies', JSON.stringify( this.state.favorites ) );
+          localStorage.setItem( 'favoriteMovies', JSON.stringify( this.props.user.FavoriteMovies ) );
         } )
         .catch( error => {
           console.error( error );
@@ -41,12 +40,12 @@ export class MovieView extends React.Component {
   }
 
   render() {
-    const { movie, onClick } = this.props;
+    const { movie, onClick, user } = this.props;
 
     if ( !movie ) return null;
 
     return (
-      <React.Fragment>
+      <Container fluid className="movie-view pb-5">
         <Navbar sticky="top" className="px-5 py-0 mb-2">
           <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
           <Nav className="ml-auto button-wrapper">
@@ -106,10 +105,16 @@ export class MovieView extends React.Component {
           </Col>
           <Col><img className="movie-poster" src={movie.ImagePath} /></Col>
         </Row>
-      </React.Fragment>
+      </Container>
     );
   }
 }
+
+let mapStateToProps = state => {
+  return { user: state.user }
+}
+
+export default connect( mapStateToProps, { setUser } )( MovieView );
 
 MovieView.propTypes = {
   movie: PropTypes.shape( {

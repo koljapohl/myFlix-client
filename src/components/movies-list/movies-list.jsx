@@ -58,7 +58,6 @@ function MoviesList( props ) {
         <MovieCard key={m._id} movie={m} />
       </Col>
     )}
-
   </React.Fragment>
   );
 }

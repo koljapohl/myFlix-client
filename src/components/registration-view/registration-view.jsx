@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Row, Col, Button, Container } from 'react-bootstrap';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link, } from 'react-router-dom';
 
 import { setUser, togglePw } from '../../actions/actions';
 
@@ -39,7 +40,6 @@ function RegistrationView( props ) {
         .then( response => {
           const data = response.data;
           console.log( data );
-          props.setUser( { Username: data.Username } );
           localStorage.setItem( 'username', data.Username );
           window.open( '/', '_self' );
         } )
@@ -124,24 +124,17 @@ function RegistrationView( props ) {
     dobInput.onchange = validateDob;
   } );
 
-  /* handle an abortion of registration process*/
-  const swapView = ( e ) => {
-    e.preventDefault();
-    window.open( '/', '_self' );
-  }
-
   //toggle pw visibility
   const changeState = () => {
     var oldState = tglpw.type;
     var isTextOrHide = ( oldState === 'password' );
     var newState = ( isTextOrHide ) ? 'text' : 'password';
     var newWord = ( isTextOrHide ) ? 'Hide' : 'Show';
-    props.togglePw( { ...tglpw, type: newState } );
-    props.togglePw( { ...tglpw, word: newWord } );
+    props.togglePw( { type: newState, word: newWord } );
   }
 
   return (
-    <React.Fragment>
+    <Container fluid className="registration-view pb-5">
       <Row className="justify-content-center px-5">
         <Col className="">
           <h3 className="my-5">Register for myFlix</h3>
@@ -210,12 +203,13 @@ function RegistrationView( props ) {
                       type="submit">
                       Register
                     </Button>
-                    <Button
-                      variant="link"
-                      type="submit"
-                      onClick={swapView}>
-                      Abort
+                    <Link to='/'>
+                      <Button
+                        variant="link"
+                        type="button">
+                        Abort
                     </Button>
+                    </Link>
                   </Col>
                 </Row>
               </Form>
@@ -223,7 +217,7 @@ function RegistrationView( props ) {
           </Row>
         </Col>
       </Row>
-    </React.Fragment>
+    </Container>
   )
 }
 

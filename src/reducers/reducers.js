@@ -6,8 +6,6 @@ import {
   SET_USER,
   UPDATE_USER,
   UNREG_USER,
-  ADD_FAV,
-  REMOVE_FAV,
   SET_SORT,
   TOGGLE_PW
 } from '../actions/actions';

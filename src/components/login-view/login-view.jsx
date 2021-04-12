@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Col, Row, Form, Button } from 'react-bootstrap/';
+import { Col, Row, Form, Button, Container } from 'react-bootstrap/';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { setUser, togglePw } from '../../actions/actions';
 import './login-view.scss';
@@ -16,8 +17,6 @@ function LoginView( props ) {
   //if a user just registered, he'll be send to login for entering password so myFlix will obtain its jwt properly,
   //therefore its username will be displayed inside corresponding input field
   const { user, tglpw } = props;
-  const [username, setUsername] = useState( localStorage.getItem( 'username' ) ? localStorage.getItem( 'username' ) : '' );
-  const [password, setPassword] = useState( '' );
 
   const handleSubmit = ( e ) => {
     e.preventDefault();
@@ -96,23 +95,16 @@ function LoginView( props ) {
     passwordInput.oninput = validatePassword;
   } );
 
-  /* switches to registration form for new users */
-  const swapView = ( e ) => {
-    e.preventDefault();
-    window.open( `/register`, "_self" );
-  }
-
   const changeState = () => {
     var oldState = tglpw.type;
     var isTextOrHide = ( oldState === 'password' );
     var newState = ( isTextOrHide ) ? 'text' : 'password';
     var newWord = ( isTextOrHide ) ? 'Hide' : 'Show';
-    props.togglePw( { ...tglpw, type: newState } );
-    props.togglePw( { ...tglpw, word: newWord } );
+    props.togglePw( { type: newState, word: newWord } );
   }
 
   return (
-    <React.Fragment>
+    <Container fluid className="login-view pb-5">
       <Row className="justify-content-center px-5">
         <Col className="">
           <h3 className="my-5">Log in to myFlix</h3>
@@ -159,15 +151,16 @@ function LoginView( props ) {
                 </Row>
                 <Form.Row size="lg" className="my-2">
                   <Form.Label className="pl-1 m-0">New to myFlix?</Form.Label>
-                  <Button className="py-0" variant="link" type="link" onClick={swapView}>
-                    Sign up here</Button>
+                  <Link to='/register'>
+                    <Button className="py-0" variant="link" type="link">
+                      Sign up here</Button></Link>
                 </Form.Row>
               </Form>
             </Col>
           </Row>
         </Col>
       </Row>
-    </React.Fragment >
+    </Container>
   );
 }
 

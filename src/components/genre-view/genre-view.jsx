@@ -23,7 +23,7 @@ export class GenreView extends React.Component {
 
     if ( !movies ) return <div className="main-view" />;
     return (
-      <React.Fragment>
+      <Container fluid className="genre-view pb-5">
         <Navbar sticky="top" className="px-5 py-0 mb-2">
           <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
           <Nav className="ml-auto button-wrapper">
@@ -87,7 +87,7 @@ export class GenreView extends React.Component {
             ) )}
           </Row>
         </Container>
-      </React.Fragment>
+      </Container>
     )
   }
 }

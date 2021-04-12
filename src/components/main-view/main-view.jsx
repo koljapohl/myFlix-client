@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Row, Col, Navbar, Nav, Button, Form } from 'react-bootstrap/';
+import { Row, Container, Navbar, Nav, Button } from 'react-bootstrap/';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -12,10 +12,10 @@ import {
 import MoviesList from '../movies-list/movies-list';
 import RegistrationView from '../registration-view/registration-view';
 import LoginView from '../login-view/login-view';
-import { MovieView } from '../movie-view/movie-view';
+import MovieView from '../movie-view/movie-view';
 import { GenreView } from '../genre-view/genre-view';
 import { DirectorView } from '../director-view/director-view';
-import { ProfileView } from '../profile-view/profile-view';
+import ProfileView from '../profile-view/profile-view';
 
 import logout from '../../../public/img/log-out.svg'
 import './main-view.scss';
@@ -43,7 +43,7 @@ class MainView extends React.Component {
         Password: localStorage.getItem( 'password' ),
         Email: localStorage.getItem( 'email' ),
         Dob: localStorage.getItem( 'dob' ),
-        FavoriteMovies: localStorage.getItem( 'favoriteMovies' )
+        FavoriteMovies: JSON.parse( localStorage.getItem( 'favoriteMovies' ) )
       } );
       this.getMovies( accessToken );
     }
@@ -70,20 +70,6 @@ class MainView extends React.Component {
     this.props.setUser( {} );
     window.open( '/', '_self' );
   }
-
-  onUpdate( data ) {
-    this.setState( {
-      user: {
-        username: data.Username,
-        password: data.Password,
-        email: data.Email,
-        dob: data.Birthday,
-        favoriteMovies: data.FavoriteMovies
-      }
-    } );
-    localStorage.setItem( 'username', this.state.user.username );
-    localStorage.setItem( 'password', this.state.user.password );
-  };
 
   getMovies( token ) {
     axios.get( 'https://myflix-kp.herokuapp.com/movies', {
@@ -118,7 +104,7 @@ class MainView extends React.Component {
             <LoginView onLoggedIn={data => this.onLoggedIn( data )} />
           );
           return (
-            <React.Fragment>
+            <Container fluid className="main-view pb-5">
               <Navbar sticky="top" className="px-5 py-0 mb-2">
                 <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
                 <Nav className="ml-auto button-wrapper">
@@ -140,13 +126,11 @@ class MainView extends React.Component {
               <Row className="px-5 py-3">
                 <MoviesList movies={movies} />
               </Row>
-            </React.Fragment>
+            </Container>
           );
         }} />
 
-        <Route exact path="/register" render={() => {
-          return <RegistrationView />;
-        }} />
+        <Route exact path="/register" component={RegistrationView} />
 
         <Route path="/movies/:movieId"
           render={( { match } ) => {
@@ -168,8 +152,9 @@ class MainView extends React.Component {
         <Route path="/users/me" render={( { match } ) => {
           return <ProfileView
             onLogout={() => this.onLogout()}
-            onUpdate={( data ) => this.onUpdate( data )}
+            // onUpdate={( data ) => this.onUpdate( data )}
             onMovieDel={() => this.onMovieDel()}
+            user={user}
             movies={movies} />
         }} />
 

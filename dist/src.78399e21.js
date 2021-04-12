@@ -53318,11 +53318,9 @@ exports.setFilter = setFilter;
 exports.setUser = setUser;
 exports.updateUser = updateUser;
 exports.unregUser = unregUser;
-exports.addFav = addFav;
-exports.removeFav = removeFav;
 exports.setSort = setSort;
 exports.togglePw = togglePw;
-exports.TOGGLE_PW = exports.SET_SORT = exports.REMOVE_FAV = exports.ADD_FAV = exports.UNREG_USER = exports.UPDATE_USER = exports.SET_USER = exports.SET_FILTER = exports.SET_MOVIES = void 0;
+exports.TOGGLE_PW = exports.SET_SORT = exports.UNREG_USER = exports.UPDATE_USER = exports.SET_USER = exports.SET_FILTER = exports.SET_MOVIES = void 0;
 //define action-types
 var SET_MOVIES = 'SET_MOVIES';
 exports.SET_MOVIES = SET_MOVIES;
@@ -53334,10 +53332,6 @@ var UPDATE_USER = 'UPDATE_USER';
 exports.UPDATE_USER = UPDATE_USER;
 var UNREG_USER = 'UNREG_USER';
 exports.UNREG_USER = UNREG_USER;
-var ADD_FAV = 'ADD_FAV';
-exports.ADD_FAV = ADD_FAV;
-var REMOVE_FAV = 'REMOVE_FAV';
-exports.REMOVE_FAV = REMOVE_FAV;
 var SET_SORT = 'SET_SORT';
 exports.SET_SORT = SET_SORT;
 var TOGGLE_PW = 'TOGGLE_PW'; //define action creators
@@ -53375,20 +53369,6 @@ function updateUser(value) {
 function unregUser(value) {
   return {
     type: UNREG_USER,
-    value: value
-  };
-}
-
-function addFav(value) {
-  return {
-    type: ADD_FAV,
-    value: value
-  };
-}
-
-function removeFav(value) {
-  return {
-    type: REMOVE_FAV,
     value: value
   };
 }
@@ -53741,6 +53721,8 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _reactRedux = require("react-redux");
 
+var _reactRouterDom = require("react-router-dom");
+
 var _actions = require("../../actions/actions");
 
 require("./registration-view.scss");
@@ -53790,9 +53772,6 @@ function RegistrationView(props) {
       }).then(function (response) {
         var data = response.data;
         console.log(data);
-        props.setUser({
-          Username: data.Username
-        });
         localStorage.setItem('username', data.Username);
         window.open('/', '_self');
       }).catch(function (e) {
@@ -53892,29 +53871,23 @@ function RegistrationView(props) {
     passwordInput.oninput = validatePassword;
     emailInput.oninput = validateEmail;
     dobInput.onchange = validateDob;
-  });
-  /* handle an abortion of registration process*/
-
-  var swapView = function swapView(e) {
-    e.preventDefault();
-    window.open('/', '_self');
-  }; //toggle pw visibility
-
+  }); //toggle pw visibility
 
   var changeState = function changeState() {
     var oldState = tglpw.type;
     var isTextOrHide = oldState === 'password';
     var newState = isTextOrHide ? 'text' : 'password';
     var newWord = isTextOrHide ? 'Hide' : 'Show';
-    props.togglePw(_extends({}, tglpw, {
-      type: newState
-    }));
-    props.togglePw(_extends({}, tglpw, {
+    props.togglePw({
+      type: newState,
       word: newWord
-    }));
+    });
   };
 
-  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, {
+  return _react.default.createElement(_reactBootstrap.Container, {
+    fluid: true,
+    className: "registration-view pb-5"
+  }, _react.default.createElement(_reactBootstrap.Row, {
     className: "justify-content-center px-5"
   }, _react.default.createElement(_reactBootstrap.Col, {
     className: ""
@@ -54011,11 +53984,12 @@ function RegistrationView(props) {
     className: "btn-register",
     variant: "primary",
     type: "submit"
-  }, "Register"), _react.default.createElement(_reactBootstrap.Button, {
+  }, "Register"), _react.default.createElement(_reactRouterDom.Link, {
+    to: "/"
+  }, _react.default.createElement(_reactBootstrap.Button, {
     variant: "link",
-    type: "submit",
-    onClick: swapView
-  }, "Abort")))))))));
+    type: "button"
+  }, "Abort"))))))))));
 }
 
 var _default = (0, _reactRedux.connect)(mapStateToProps, {
@@ -54038,7 +54012,7 @@ RegistrationView.propTypes = {
   }),
   togglePw: _propTypes.default.func.isRequired
 };
-},{"react":"../node_modules/react/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","prop-types":"../node_modules/prop-types/index.js","react-redux":"../node_modules/react-redux/es/index.js","../../actions/actions":"actions/actions.js","./registration-view.scss":"components/registration-view/registration-view.scss"}],"components/login-view/login-view.scss":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","prop-types":"../node_modules/prop-types/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","../../actions/actions":"actions/actions.js","./registration-view.scss":"components/registration-view/registration-view.scss"}],"components/login-view/login-view.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -54061,6 +54035,8 @@ var _axios = _interopRequireDefault(require("axios"));
 
 var _reactRedux = require("react-redux");
 
+var _reactRouterDom = require("react-router-dom");
+
 var _actions = require("../../actions/actions");
 
 require("./login-view.scss");
@@ -54072,18 +54048,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var mapStateToProps = function mapStateToProps(state) {
   var user = state.user,
@@ -54099,16 +54063,6 @@ function LoginView(props) {
   //therefore its username will be displayed inside corresponding input field
   var user = props.user,
       tglpw = props.tglpw;
-
-  var _useState = (0, _react.useState)(localStorage.getItem('username') ? localStorage.getItem('username') : ''),
-      _useState2 = _slicedToArray(_useState, 2),
-      username = _useState2[0],
-      setUsername = _useState2[1];
-
-  var _useState3 = (0, _react.useState)(''),
-      _useState4 = _slicedToArray(_useState3, 2),
-      password = _useState4[0],
-      setPassword = _useState4[1];
 
   var handleSubmit = function handleSubmit(e) {
     e.preventDefault();
@@ -54199,27 +54153,22 @@ function LoginView(props) {
     usernameInput.oninput = validateUsername;
     passwordInput.oninput = validatePassword;
   });
-  /* switches to registration form for new users */
-
-  var swapView = function swapView(e) {
-    e.preventDefault();
-    window.open("/register", "_self");
-  };
 
   var changeState = function changeState() {
     var oldState = tglpw.type;
     var isTextOrHide = oldState === 'password';
     var newState = isTextOrHide ? 'text' : 'password';
     var newWord = isTextOrHide ? 'Hide' : 'Show';
-    props.togglePw(_extends({}, tglpw, {
-      type: newState
-    }));
-    props.togglePw(_extends({}, tglpw, {
+    props.togglePw({
+      type: newState,
       word: newWord
-    }));
+    });
   };
 
-  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Row, {
+  return _react.default.createElement(_reactBootstrap.Container, {
+    fluid: true,
+    className: "login-view pb-5"
+  }, _react.default.createElement(_reactBootstrap.Row, {
     className: "justify-content-center px-5"
   }, _react.default.createElement(_reactBootstrap.Col, {
     className: ""
@@ -54286,12 +54235,13 @@ function LoginView(props) {
     className: "my-2"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
     className: "pl-1 m-0"
-  }, "New to myFlix?"), _react.default.createElement(_reactBootstrap.Button, {
+  }, "New to myFlix?"), _react.default.createElement(_reactRouterDom.Link, {
+    to: "/register"
+  }, _react.default.createElement(_reactBootstrap.Button, {
     className: "py-0",
     variant: "link",
-    type: "link",
-    onClick: swapView
-  }, "Sign up here"))))))));
+    type: "link"
+  }, "Sign up here")))))))));
 }
 
 var _default = (0, _reactRedux.connect)(mapStateToProps, {
@@ -54315,7 +54265,7 @@ LoginView.propTypes = {
   }),
   togglePw: _propTypes.default.func.isRequired
 };
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","react-redux":"../node_modules/react-redux/es/index.js","../../actions/actions":"actions/actions.js","./login-view.scss":"components/login-view/login-view.scss"}],"../public/img/arrow.svg":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/":"../node_modules/react-bootstrap/esm/index.js","axios":"../node_modules/axios/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","../../actions/actions":"actions/actions.js","./login-view.scss":"components/login-view/login-view.scss"}],"../public/img/arrow.svg":[function(require,module,exports) {
 module.exports = "/arrow.03af8ce4.svg";
 },{}],"../public/img/log-out.svg":[function(require,module,exports) {
 module.exports = "/log-out.44073d91.svg";
@@ -54330,7 +54280,7 @@ module.hot.accept(reloadCSS);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.MovieView = void 0;
+exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
@@ -54342,11 +54292,17 @@ var _reactRouterDom = require("react-router-dom");
 
 var _axios = _interopRequireDefault(require("axios"));
 
+var _reactRedux = require("react-redux");
+
+var _actions = require("../../actions/actions");
+
 var _arrow = _interopRequireDefault(require("../../../public/img/arrow.svg"));
 
 var _logOut = _interopRequireDefault(require("../../../public/img/log-out.svg"));
 
 require("./movie-view.scss");
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -54395,9 +54351,7 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
     _classCallCheck(this, MovieView);
 
     _this = _super.call(this);
-    _this.state = {
-      favorites: localStorage.getItem('favoriteMovies') ? JSON.parse(localStorage.getItem('favoriteMovies')) : []
-    };
+    _this.state = {};
     return _this;
   }
 
@@ -54407,22 +54361,21 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
       var _this2 = this;
 
       var token = localStorage.getItem('token');
-      var user = localStorage.getItem('username');
 
-      if (this.state.favorites.indexOf(movie._id) > -1) {
+      if (this.props.user.FavoriteMovies.indexOf(movie._id) > -1) {
         alert("".concat(movie.Title, " is already one of your favorites."));
       } else {
-        _axios.default.post("https://myflix-kp.herokuapp.com/users/".concat(user, "/movies/").concat(movie._id), {}, {
+        _axios.default.post("https://myflix-kp.herokuapp.com/users/".concat(this.props.user.Username, "/movies/").concat(movie._id), {}, {
           headers: {
             Authorization: "Bearer ".concat(token)
           }
         }).then(function () {
-          _this2.setState({
-            favorites: [movie._id].concat(_toConsumableArray(_this2.state.favorites))
-          });
+          _this2.props.setUser(_extends({}, _this2.props.user, {
+            FavoriteMovies: [movie._id].concat(_toConsumableArray(_this2.props.user.FavoriteMovies))
+          }));
 
           alert("".concat(movie.Title, " was successfully added to your favorites list."));
-          localStorage.setItem('favoriteMovies', JSON.stringify(_this2.state.favorites));
+          localStorage.setItem('favoriteMovies', JSON.stringify(_this2.props.user.FavoriteMovies));
         }).catch(function (error) {
           console.error(error);
         });
@@ -54435,9 +54388,13 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
 
       var _this$props = this.props,
           movie = _this$props.movie,
-          _onClick = _this$props.onClick;
+          _onClick = _this$props.onClick,
+          user = _this$props.user;
       if (!movie) return null;
-      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Navbar, {
+      return _react.default.createElement(_reactBootstrap.Container, {
+        fluid: true,
+        className: "movie-view pb-5"
+      }, _react.default.createElement(_reactBootstrap.Navbar, {
         sticky: "top",
         className: "px-5 py-0 mb-2"
       }, _react.default.createElement(_reactBootstrap.Navbar.Brand, {
@@ -54513,7 +54470,17 @@ var MovieView = /*#__PURE__*/function (_React$Component) {
   return MovieView;
 }(_react.default.Component);
 
-exports.MovieView = MovieView;
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    user: state.user
+  };
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps, {
+  setUser: _actions.setUser
+})(MovieView);
+
+exports.default = _default;
 MovieView.propTypes = {
   movie: _propTypes.default.shape({
     ImagePath: _propTypes.default.string.isRequired,
@@ -54533,7 +54500,7 @@ MovieView.propTypes = {
   }).isRequired,
   onClick: _propTypes.default.func.isRequired
 };
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/":"../node_modules/react-bootstrap/esm/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","axios":"../node_modules/axios/index.js","../../../public/img/arrow.svg":"../public/img/arrow.svg","../../../public/img/log-out.svg":"../public/img/log-out.svg","./movie-view.scss":"components/movie-view/movie-view.scss"}],"components/genre-view/genre-view.scss":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap/":"../node_modules/react-bootstrap/esm/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","axios":"../node_modules/axios/index.js","react-redux":"../node_modules/react-redux/es/index.js","../../actions/actions":"actions/actions.js","../../../public/img/arrow.svg":"../public/img/arrow.svg","../../../public/img/log-out.svg":"../public/img/log-out.svg","./movie-view.scss":"components/movie-view/movie-view.scss"}],"components/genre-view/genre-view.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -54614,7 +54581,10 @@ var GenreView = /*#__PURE__*/function (_React$Component) {
       if (!movies) return _react.default.createElement("div", {
         className: "main-view"
       });
-      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Navbar, {
+      return _react.default.createElement(_reactBootstrap.Container, {
+        fluid: true,
+        className: "genre-view pb-5"
+      }, _react.default.createElement(_reactBootstrap.Navbar, {
         sticky: "top",
         className: "px-5 py-0 mb-2"
       }, _react.default.createElement(_reactBootstrap.Navbar.Brand, {
@@ -54776,7 +54746,10 @@ var DirectorView = /*#__PURE__*/function (_React$Component) {
       if (!movies) return _react.default.createElement("div", {
         className: "main-view"
       });
-      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Navbar, {
+      return _react.default.createElement(_reactBootstrap.Container, {
+        fluid: true,
+        className: "director-view pb-5"
+      }, _react.default.createElement(_reactBootstrap.Navbar, {
         sticky: "top",
         className: "px-5 py-0 mb-2"
       }, _react.default.createElement(_reactBootstrap.Navbar.Brand, {
@@ -54872,7 +54845,7 @@ module.hot.accept(reloadCSS);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ProfileView = ProfileView;
+exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -54884,11 +54857,17 @@ var _reactRouterDom = require("react-router-dom");
 
 var _axios = _interopRequireDefault(require("axios"));
 
+var _reactRedux = require("react-redux");
+
+var _actions = require("../../actions/actions");
+
 var _arrow = _interopRequireDefault(require("../../../public/img/arrow.svg"));
 
 var _logOut = _interopRequireDefault(require("../../../public/img/log-out.svg"));
 
 require("./profile-view.scss");
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -54896,64 +54875,27 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    user: state.user,
+    tglpw: state.tglpw
+  };
+};
 
 function ProfileView(props) {
-  var _useState = (0, _react.useState)(localStorage.getItem('username')),
-      _useState2 = _slicedToArray(_useState, 2),
-      username = _useState2[0],
-      setUsername = _useState2[1];
+  var user = props.user,
+      movies = props.movies,
+      tglpw = props.tglpw; // convert birthday to common format
 
-  var _useState3 = (0, _react.useState)(localStorage.getItem('password')),
-      _useState4 = _slicedToArray(_useState3, 2),
-      password = _useState4[0],
-      setPassword = _useState4[1];
+  var convertDob = '';
 
-  var _useState5 = (0, _react.useState)(localStorage.getItem('email')),
-      _useState6 = _slicedToArray(_useState5, 2),
-      email = _useState6[0],
-      setEmail = _useState6[1];
-
-  var _useState7 = (0, _react.useState)(localStorage.getItem('dob')),
-      _useState8 = _slicedToArray(_useState7, 2),
-      dob = _useState8[0],
-      setDob = _useState8[1];
-
-  var _useState9 = (0, _react.useState)(JSON.parse(localStorage.getItem('favoriteMovies'))),
-      _useState10 = _slicedToArray(_useState9, 2),
-      favoriteMovies = _useState10[0],
-      setFavoriteMovies = _useState10[1];
-
-  var _useState11 = (0, _react.useState)('password'),
-      _useState12 = _slicedToArray(_useState11, 2),
-      type = _useState12[0],
-      setType = _useState12[1];
-
-  var _useState13 = (0, _react.useState)('Show'),
-      _useState14 = _slicedToArray(_useState13, 2),
-      word = _useState14[0],
-      setWord = _useState14[1]; // convert birthday to common format
-
-
-  var convertDob;
-
-  if (dob) {
-    convertDob = dob.slice(0, 10);
+  if (user.Dob) {
+    convertDob = user.Dob.slice(0, 10);
   } // List of current users favorite Movies
 
 
-  var favoriteMovieList = props.movies.filter(function (movie) {
-    return favoriteMovies.includes(movie._id);
+  var favoriteMovieList = movies.filter(function (movie) {
+    return user.FavoriteMovies.includes(movie._id);
   });
 
   var updateUser = function updateUser(e) {
@@ -54976,21 +54918,22 @@ function ProfileView(props) {
       var birth = localStorage.getItem('dob');
 
       _axios.default.put("https://myflix-kp.herokuapp.com/users/".concat(un), {
-        Username: username == un ? un : username,
-        Password: password == pw ? pw : password,
-        Email: email == em ? em : email,
-        Birthday: dob == birth ? birth : dob
+        Username: user.Username == un ? un : user.Username,
+        Password: user.Password == pw ? pw : user.Password,
+        Email: user.Email == em ? em : user.Email,
+        Birthday: user.Dob == birth ? birth : user.Dob
       }, {
         headers: {
           Authorization: "Bearer ".concat(token)
         }
       }).then(function (response) {
         var data = response.data;
-        props.onUpdate(data);
-        setUsername(data.Username);
-        setPassword(data.Password);
-        setEmail(data.Email);
-        setDob(data.Birthday);
+        props.setUser(data);
+        console.log(data);
+        localStorage.setItem('username', data.Username);
+        localStorage.setItem('password', data.Password);
+        localStorage.setItem('email', data.Email);
+        localStorage.setItem('dob', data.Dob);
         alert('User has been updated successfully.');
       }).catch(function (error) {
         console.log(error);
@@ -55065,24 +55008,25 @@ function ProfileView(props) {
   });
 
   var handleCancel = function handleCancel() {
-    setUsername(localStorage.getItem('username'));
-    setPassword(localStorage.getItem('password'));
-    setEmail(localStorage.getItem('email'));
-    setDob(localStorage.getItem('dob'));
+    props.setUser(_extends({}, user, {
+      Username: localStorage.getItem('username'),
+      Password: localStorage.getItem('password'),
+      Email: localStorage.getItem('email'),
+      Dob: localStorage.getItem('dob')
+    }));
   };
 
   var onUnregister = function onUnregister() {
-    var user = localStorage.getItem('username');
     var token = localStorage.getItem('token');
 
     if (confirm('Are you sure you want to delete your account?')) {
-      _axios.default.delete("https://myflix-kp.herokuapp.com/users/".concat(user), {
+      _axios.default.delete("https://myflix-kp.herokuapp.com/users/".concat(user.Username), {
         headers: {
           Authorization: "Bearer ".concat(token)
         }
-      }).then(function (response) {
+      }).then(function () {
         localStorage.clear();
-        alert("We're sorry you're leaving ".concat(user, "."));
+        alert("We're sorry you're leaving ".concat(user.Username, "."));
         window.open('/', '_self');
       });
     }
@@ -55090,20 +55034,22 @@ function ProfileView(props) {
 
   var handleUnfav = function handleUnfav(mId) {
     var token = localStorage.getItem('token');
-    var user = localStorage.getItem('username');
-    var favList = JSON.parse(localStorage.getItem('favoriteMovies'));
 
-    _axios.default.delete("https://myflix-kp.herokuapp.com/users/".concat(user, "/movies/").concat(mId), {
+    _axios.default.delete("https://myflix-kp.herokuapp.com/users/".concat(user.Username, "/movies/").concat(mId), {
       headers: {
         Authorization: "Bearer ".concat(token)
       }
     }).then(function () {
-      var newList = favList.filter(function (item) {
-        return item !== mId;
+      var newList = favoriteMovieList.filter(function (item) {
+        return item._id !== mId;
+      });
+      newList = newList.map(function (item) {
+        return item._id;
       });
       localStorage.setItem('favoriteMovies', JSON.stringify(newList));
-      setFavoriteMovies(newList);
-      props.onMovieDel();
+      props.setUser(_extends({}, user, {
+        FavoriteMovies: newList
+      }));
     }).catch(function (error) {
       console.error(error);
     });
@@ -55111,17 +55057,19 @@ function ProfileView(props) {
 
 
   var changeState = function changeState() {
-    var oldState = type;
+    var oldState = tglpw.type;
     var isTextOrHide = oldState === 'password';
     var newState = isTextOrHide ? 'text' : 'password';
     var newWord = isTextOrHide ? 'Hide' : 'Show';
-    setType(newState);
-    setWord(newWord);
+    props.togglePw({
+      type: newState,
+      word: newWord
+    });
   };
 
-  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Container, {
+  return _react.default.createElement(_reactBootstrap.Container, {
     fluid: true,
-    className: "px-5 justify-content-center"
+    className: "px-5 pb-5 justify-content-center"
   }, _react.default.createElement(_reactBootstrap.Navbar, {
     sticky: "top",
     className: "p-0 mb-2"
@@ -55180,10 +55128,12 @@ function ProfileView(props) {
     type: "text",
     placeholder: "Set a new Username",
     name: "inputUsername",
-    value: username,
+    value: user.Username,
     className: "form-control-profile",
     onChange: function onChange(e) {
-      return setUsername(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Username: e.target.value
+      }));
     },
     pattern: "[a-zA-Z\\d]{5,}"
   }), _react.default.createElement(_reactBootstrap.Form.Control.Feedback, {
@@ -55196,17 +55146,19 @@ function ProfileView(props) {
     column: true,
     md: 3
   }, "Password"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
-    type: type,
+    type: tglpw.type,
     placeholder: "Set a new Password",
     name: "password",
     className: "form-control-profile",
     onChange: function onChange(e) {
-      return setPassword(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Password: e.target.value
+      }));
     }
   }), _react.default.createElement("span", {
     className: "password-trigger",
     onClick: changeState
-  }, word))), _react.default.createElement(_reactBootstrap.Form.Group, {
+  }, tglpw.word))), _react.default.createElement(_reactBootstrap.Form.Group, {
     as: _reactBootstrap.Row,
     controlId: "formEmail"
   }, _react.default.createElement(_reactBootstrap.Form.Label, {
@@ -55215,12 +55167,14 @@ function ProfileView(props) {
     md: 3
   }, "Email"), _react.default.createElement(_reactBootstrap.Col, null, _react.default.createElement(_reactBootstrap.Form.Control, {
     type: "email",
-    value: email,
+    value: user.Email,
     placeholder: "Set a new Email adress",
     name: "email",
     className: "form-control-profile",
     onChange: function onChange(e) {
-      return setEmail(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Email: e.target.value
+      }));
     },
     pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
   }))), _react.default.createElement(_reactBootstrap.Form.Group, {
@@ -55238,7 +55192,9 @@ function ProfileView(props) {
     name: "birthday",
     className: "form-control-profile",
     onChange: function onChange(e) {
-      return setDob(e.target.value);
+      return props.setUser(_extends({}, user, {
+        Dob: e.target.value
+      }));
     }
   }))), _react.default.createElement(_reactBootstrap.Row, {
     className: "my-4"
@@ -55295,15 +55251,32 @@ function ProfileView(props) {
       variant: "outline-danger",
       type: "button"
     }, "Remove"))));
-  }))));
+  })));
 }
 
+var _default = (0, _reactRedux.connect)(mapStateToProps, {
+  setUser: _actions.setUser,
+  togglePw: _actions.togglePw
+})(ProfileView);
+
+exports.default = _default;
 ProfileView.propTypes = {
   movies: _propTypes.default.array.isRequired,
-  onLogout: _propTypes.default.func.isRequired,
-  onUpdate: _propTypes.default.func.isRequired
+  user: _propTypes.default.shape({
+    Username: _propTypes.default.string,
+    Password: _propTypes.default.string,
+    Email: _propTypes.default.string,
+    Dob: _propTypes.default.Date
+  }),
+  tglpw: _propTypes.default.shape({
+    type: _propTypes.default.string,
+    word: _propTypes.default.string
+  }),
+  togglePw: _propTypes.default.func.isRequired,
+  setUser: _propTypes.default.func.isRequired,
+  onLogout: _propTypes.default.func.isRequired
 };
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","axios":"../node_modules/axios/index.js","../../../public/img/arrow.svg":"../public/img/arrow.svg","../../../public/img/log-out.svg":"../public/img/log-out.svg","./profile-view.scss":"components/profile-view/profile-view.scss"}],"components/main-view/main-view.scss":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","axios":"../node_modules/axios/index.js","react-redux":"../node_modules/react-redux/es/index.js","../../actions/actions":"actions/actions.js","../../../public/img/arrow.svg":"../public/img/arrow.svg","../../../public/img/log-out.svg":"../public/img/log-out.svg","./profile-view.scss":"components/profile-view/profile-view.scss"}],"components/main-view/main-view.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -55334,13 +55307,13 @@ var _registrationView = _interopRequireDefault(require("../registration-view/reg
 
 var _loginView = _interopRequireDefault(require("../login-view/login-view"));
 
-var _movieView = require("../movie-view/movie-view");
+var _movieView = _interopRequireDefault(require("../movie-view/movie-view"));
 
 var _genreView = require("../genre-view/genre-view");
 
 var _directorView = require("../director-view/director-view");
 
-var _profileView = require("../profile-view/profile-view");
+var _profileView = _interopRequireDefault(require("../profile-view/profile-view"));
 
 var _logOut = _interopRequireDefault(require("../../../public/img/log-out.svg"));
 
@@ -55407,7 +55380,7 @@ var MainView = /*#__PURE__*/function (_React$Component) {
           Password: localStorage.getItem('password'),
           Email: localStorage.getItem('email'),
           Dob: localStorage.getItem('dob'),
-          FavoriteMovies: localStorage.getItem('favoriteMovies')
+          FavoriteMovies: JSON.parse(localStorage.getItem('favoriteMovies'))
         });
         this.getMovies(accessToken);
       }
@@ -55435,21 +55408,6 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       localStorage.clear();
       this.props.setUser({});
       window.open('/', '_self');
-    }
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(data) {
-      this.setState({
-        user: {
-          username: data.Username,
-          password: data.Password,
-          email: data.Email,
-          dob: data.Birthday,
-          favoriteMovies: data.FavoriteMovies
-        }
-      });
-      localStorage.setItem('username', this.state.user.username);
-      localStorage.setItem('password', this.state.user.password);
     }
   }, {
     key: "getMovies",
@@ -55496,7 +55454,10 @@ var MainView = /*#__PURE__*/function (_React$Component) {
               return _this3.onLoggedIn(data);
             }
           });
-          return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_reactBootstrap.Navbar, {
+          return _react.default.createElement(_reactBootstrap.Container, {
+            fluid: true,
+            className: "main-view pb-5"
+          }, _react.default.createElement(_reactBootstrap.Navbar, {
             sticky: "top",
             className: "px-5 py-0 mb-2"
           }, _react.default.createElement(_reactBootstrap.Navbar.Brand, {
@@ -55529,14 +55490,12 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       }), _react.default.createElement(_reactRouterDom.Route, {
         exact: true,
         path: "/register",
-        render: function render() {
-          return _react.default.createElement(_registrationView.default, null);
-        }
+        component: _registrationView.default
       }), _react.default.createElement(_reactRouterDom.Route, {
         path: "/movies/:movieId",
         render: function render(_ref) {
           var match = _ref.match;
-          return _react.default.createElement(_movieView.MovieView, {
+          return _react.default.createElement(_movieView.default, {
             onClick: function onClick() {
               return _this3.onLogout();
             },
@@ -55577,16 +55536,15 @@ var MainView = /*#__PURE__*/function (_React$Component) {
         path: "/users/me",
         render: function render(_ref4) {
           var match = _ref4.match;
-          return _react.default.createElement(_profileView.ProfileView, {
+          return _react.default.createElement(_profileView.default, {
             onLogout: function onLogout() {
               return _this3.onLogout();
-            },
-            onUpdate: function onUpdate(data) {
-              return _this3.onUpdate(data);
-            },
+            } // onUpdate={( data ) => this.onUpdate( data )}
+            ,
             onMovieDel: function onMovieDel() {
               return _this3.onMovieDel();
             },
+            user: user,
             movies: movies
           });
         }
