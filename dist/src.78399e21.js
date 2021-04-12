@@ -53693,15 +53693,21 @@ function MoviesList(props) {
     md: 3
   }, _react.default.createElement(_visibilityFilterInput.default, {
     visibilityFilter: visibilityFilter
-  }))), filteredMovies.map(function (m) {
+  }))), _react.default.createElement(_reactBootstrap.Row, {
+    className: "movies-list"
+  }, filteredMovies.map(function (m) {
     return _react.default.createElement(_reactBootstrap.Col, {
+      xs: 6,
+      sm: 4,
+      md: 3,
+      lg: 2,
       className: "pb-3",
       key: m._id
     }, _react.default.createElement(_movieCard.default, {
       key: m._id,
       movie: m
     }));
-  }));
+  })));
 }
 
 var _default = (0, _reactRedux.connect)(mapStateToProps, {

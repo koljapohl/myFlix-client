@@ -53,11 +53,13 @@ function MoviesList( props ) {
         <VisibilityFilterInput visibilityFilter={visibilityFilter} />
       </Col>
     </Row>
-    {filteredMovies.map( m =>
-      <Col className="pb-3" key={m._id}>
-        <MovieCard key={m._id} movie={m} />
-      </Col>
-    )}
+    <Row className="movies-list">
+      {filteredMovies.map( m =>
+        <Col xs={6} sm={4} md={3} lg={2} className="pb-3" key={m._id}>
+          <MovieCard key={m._id} movie={m} />
+        </Col>
+      )}
+    </Row>
   </React.Fragment>
   );
 }

@@ -1,5 +1,10 @@
 # myFlix-client
 
+## Project description
+
+This project addresses the development of the client-side of the movie application myFlix. The frontend will be build by using the React framework. This will interact with the REST API that has been previously defined in a preceding project.
+In the end, the whole application will follow the MERN tech stack.
+
 ## setting up parcel
 
 in the command prompt type:
@@ -34,7 +39,7 @@ for building and running application use *index.html* as entry point for parcel
 
 within Terminal, type:
 
-`parcel src\index.html` to run the build process
+`npm start` to run the build process
 
 app will be run on: `localhost:1234`
 
@@ -45,8 +50,13 @@ app will be run on: `localhost:1234`
 + React-Bootstrap
 + Axios
 + PropTypes
++ Redux
 
 ### dev-Dependencies
 
 + Babel
 + Sass
+
+## API
+
+This project connects to this [movie API](https://github.com/koljapohl/movie_api)
