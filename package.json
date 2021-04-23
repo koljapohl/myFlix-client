@@ -4,11 +4,9 @@
     "start": "parcel src/index.html"
   },
   "dependencies": {
-    "@parcel/transformer-sass": "2.0.0-alpha.3",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "normalize.css": "^8.0.1",
-    "parcel": "^2.0.0-beta.2",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",
@@ -24,8 +22,10 @@
     "@babel/plugin-proposal-function-bind": "^7.12.13",
     "@babel/preset-env": "^7.13.15",
     "@babel/preset-react": "^7.13.13",
+    "@parcel/transformer-sass": "^2.0.0-beta.2",
     "cssnano": "^4.1.10",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "parcel": "^2.0.0-beta.2",
     "sass": "^1.32.7"
   }
 }
