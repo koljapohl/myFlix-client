@@ -1,15 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, Navbar, Nav, Row, Col, Button } from 'react-bootstrap/';
+import { Navbar, Nav, Row, Col, Button } from 'react-bootstrap/';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import arrow from '../../../public/img/arrow.svg';
+import logout from '../../../public/img/log-out.svg'
 import './movie-view.scss';
 
 export class MovieView extends React.Component {
   constructor() {
     super();
 
-    this.state = {};
+    this.state = {
+      favorites: localStorage.getItem( 'favoriteMovies' ) ? JSON.parse( localStorage.getItem( 'favoriteMovies' ) ) : []
+    };
+  }
+
+  handleFavorite( movie ) {
+    let token = localStorage.getItem( 'token' );
+    let user = localStorage.getItem( 'username' );
+    if ( this.state.favorites.indexOf( movie._id ) > -1 ) {
+      alert( `${movie.Title} is already one of your favorites.` );
+    } else {
+      axios.post( `https://myflix-kp.herokuapp.com/users/${user}/movies/${movie._id}`, {},
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        } )
+        .then( () => {
+          this.setState( {
+            favorites: [movie._id, ...this.state.favorites]
+          } );
+          alert( `${movie.Title} was successfully added to your favorites list.` );
+          localStorage.setItem( 'favoriteMovies', JSON.stringify( this.state.favorites ) );
+        } )
+        .catch( error => {
+          console.error( error );
+        } );
+    }
   }
 
   render() {
@@ -18,39 +46,57 @@ export class MovieView extends React.Component {
     if ( !movie ) return null;
 
     return (
-      <Container>
-        <Navbar className="px-0 mb-4">
-          <Button
-            className="btn-back"
-            variant="link"
-            type="button"
-            onClick={() => onClick()}>
-            <img className="arrow" src={arrow} alt="back icon" />
-          </Button>
-          <Navbar.Brand>
-            <h1 className="brand my-auto">{movie.Title}
-              <Button variant="link" type="button">Star</Button></h1>
-          </Navbar.Brand>
-          <Nav className="ml-auto">
-            <Nav.Link className="nav-item__last" href="#">
+      <React.Fragment>
+        <Navbar sticky="top" className="px-5 py-0 mb-2">
+          <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
+          <Nav className="ml-auto button-wrapper">
+            <Link to={'/users/me'}>
               <Button
-                variant="primary"
                 type="button"
-                className="btn-profile btn-last">
-                Profile <em>handler!!</em>
-              </Button>
-            </Nav.Link>
+                variant="primary">
+                Profile
+            </Button>
+            </Link>
+            <Button className="btn-logout"
+              variant="link"
+              type="button"
+              onClick={() => onClick()}>
+              <img className="logout" src={logout} alt="logout icon" />
+            </Button>
           </Nav>
         </Navbar>
-        <Row className="content-body">
+        <Row className="px-5 mb-4">
+          <Col xs="auto">
+            <Link to={"/"} className="btn-back px-0">
+              <img className="arrow" src={arrow} alt="back icon" />
+            </Link>
+          </Col>
+          <Col xs="auto">
+            <h1 className="brand my-auto">{movie.Title}</h1>
+          </Col>
+          <Col>
+            <Button
+              className="ml-4"
+              onClick={() => { this.handleFavorite( movie ) }}
+              variant="outline-primary"
+              type="button">
+              Add to favorites
+            </Button>
+          </Col>
+        </Row>
+        <Row className="px-5 content-body">
           <Col className="content-text" md={8}>
-            <Row className="align-items-center">
-              <Col xs="auto"><p>Genre:</p></Col>
-              <Col><a href="#" alt="link to genre"><p>{movie.Genre.Title}</p></a></Col>
+            <Row className="align-items-center mb-2">
+              <Col xs="auto">Genre:</Col>
+              <Link to={`/genres/${movie.Genre.Title}`} className="px-0">
+                {movie.Genre.Title}
+              </Link>
             </Row>
             <Row className="align-items-center mb-4">
-              <Col xs="auto"><p>Director:</p></Col>
-              <Col><a href="#" alt="link to director"><p>{movie.Director.Name}</p></a></Col>
+              <Col xs="auto">Director:</Col>
+              <Link to={`/directors/${movie.Director.Name}`} >
+                {movie.Director.Name}
+              </Link>
             </Row>
             <Row className="description">
               <Col>
@@ -60,7 +106,7 @@ export class MovieView extends React.Component {
           </Col>
           <Col><img className="movie-poster" src={movie.ImagePath} /></Col>
         </Row>
-      </Container>
+      </React.Fragment>
     );
   }
 }

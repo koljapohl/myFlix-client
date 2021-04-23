@@ -5,9 +5,25 @@
 .main-view {
   font-family: 'Montserrat', 'Source Sans Pro', sans-serif;
 }
+.navbar, footer{
+  background-color: $background-color;
+}
+.button-wrapper{
+  align-items: center;
+}
 .brand {
   font-size: 1.7rem !important;
 }
 .buttons {
   margin-left: auto;
+}
+.btn-logout{
+  padding-right: 0px;
+}
+img.logout{
+  height: 2rem;
+  width: auto;
+}
+.btn-profile_wrapper {
+  text-align: end;
 }
