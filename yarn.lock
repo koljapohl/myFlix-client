@@ -1296,13 +1296,6 @@
   dependencies:
     "@parcel/types" "2.0.0-beta.2"
 
-"@parcel/plugin@2.0.0-nightly.644+737b7ec5":
-  "integrity" "sha512-Lis8vcoqjPOYawZ7xmVHSbE1EMvYi6/oVSioSSW+yfqj1Kqn9cXU7UBU7ESn6SnCe1UftfxYJ9lTNe6EIKkdsg=="
-  "resolved" "https://registry.npmjs.org/@parcel/plugin/-/plugin-2.0.0-nightly.644.tgz"
-  "version" "2.0.0-nightly.644"
-  dependencies:
-    "@parcel/types" "2.0.0-nightly.644+737b7ec5"
-
 "@parcel/reporter-cli@2.0.0-beta.2":
   "integrity" "sha512-OmuFVMjifauy29vQMEeYeorNmOoZ3kbjB5peUt6vZ3y3lP+OmentlXw1MHl9QudCzSl/PlK1HKotKaHLLUBdFA=="
   "resolved" "https://registry.npmjs.org/@parcel/reporter-cli/-/reporter-cli-2.0.0-beta.2.tgz"
@@ -1520,24 +1513,10 @@
     "react-refresh" "^0.9.0"
     "semver" "^5.4.1"
 
-"@parcel/transformer-sass@^2.0.0-beta.2":
-  "integrity" "sha512-hq4S5p9jirS1ktPOPYaZeIxbCqkwfoeiVJajVYMm3Y+BW8S/580bQKV27BjWZFKEkwsIbHdYZEQkPSZV41FAIA=="
-  "resolved" "https://registry.npmjs.org/@parcel/transformer-sass/-/transformer-sass-2.0.0-nightly.644.tgz"
-  "version" "2.0.0-nightly.644"
-  dependencies:
-    "@parcel/plugin" "2.0.0-nightly.644+737b7ec5"
-    "@parcel/source-map" "2.0.0-alpha.4.21"
-    "sass" "^1.32.4"
-
 "@parcel/types@2.0.0-beta.2":
   "integrity" "sha512-ri2BPGAFDntQbA5p3m/4QgnEqWYToUMkAtLelXSPbwnTM0KARavTAwSRqz1xwTdXa8gQyv4SSV7xURwaPaZ3GA=="
   "resolved" "https://registry.npmjs.org/@parcel/types/-/types-2.0.0-beta.2.tgz"
   "version" "2.0.0-beta.2"
-
-"@parcel/types@2.0.0-nightly.644+737b7ec5":
-  "integrity" "sha512-fdTzk3+irf5vUNziT7AE0Qj+HHST3ooJGlegcTw1eRK3dEjVW2U10jQK4W67z81Bru0n6etOsHaZ+5VAjCyXcw=="
-  "resolved" "https://registry.npmjs.org/@parcel/types/-/types-2.0.0-nightly.644.tgz"
-  "version" "2.0.0-nightly.644"
 
 "@parcel/utils@2.0.0-beta.2":
   "integrity" "sha512-v8vFGdUY/IuuL7dvmdNxhv4TowgqYDxupToxEvMix1GePRx7QTV1ugy/uWgMXhNIytFo4qyo1fWD7VcXLMS1TQ=="
@@ -6022,7 +6001,7 @@
   "resolved" "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
   "version" "2.1.2"
 
-"sass@^1.32.4", "sass@^1.32.7":
+"sass@^1.32.7":
   "integrity" "sha512-Nx0pcWoonAkn7CRp0aE/hket1UP97GiR1IFw3kcjV3pnenhWgZEWUf0ZcfPOV2fK52fnOcK3JdC/YYZ9E47DTQ=="
   "resolved" "https://registry.npmjs.org/sass/-/sass-1.32.10.tgz"
   "version" "1.32.10"
