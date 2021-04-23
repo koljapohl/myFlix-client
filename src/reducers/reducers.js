@@ -4,12 +4,6 @@ import {
   SET_MOVIES,
   SET_FILTER,
   SET_USER,
-  LOGOUT_USER,
-  ADD_USER,
-  UPDATE_USER,
-  UNREG_USER,
-  ADD_FAV,
-  REMOVE_FAV,
   SET_SORT,
   TOGGLE_PW
 } from '../actions/actions';
@@ -30,7 +24,12 @@ function movies( state = [], action ) {
       return state;
   }
 }
-function user( state = '', action ) {
+function user( state = {
+  Username: localStorage.getItem( 'username' ) ? localStorage.getItem( 'username' ) : '',
+  Password: '',
+  Email: '',
+  Dob: ''
+}, action ) {
   switch ( action.type ) {
     case SET_USER:
       return action.value;
@@ -38,11 +37,31 @@ function user( state = '', action ) {
       return state;
   }
 }
-
+function sort( state = false, action ) {
+  switch ( action.type ) {
+    case SET_SORT:
+      return action.value;
+    default:
+      return state;
+  }
+}
+function tglpw( state = {
+  type: 'password',
+  word: 'Show'
+}, action ) {
+  switch ( action.type ) {
+    case TOGGLE_PW:
+      return action.value;
+    default:
+      return state;
+  }
+}
 const moviesApp = combineReducers( {
   visibilityFilter,
   movies,
-  user
+  user,
+  sort,
+  tglpw
 } );
 
 export default moviesApp;

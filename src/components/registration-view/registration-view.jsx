@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Form, Row, Col, Button, Container } from 'react-bootstrap';
 import axios from 'axios';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link, } from 'react-router-dom';
+
+import { setUser, togglePw } from '../../actions/actions';
 
 import './registration-view.scss';
 
-export function RegistrationView( props ) {
-  const [username, setUsername] = useState( '' );
-  const [password, setPassword] = useState( '' );
-  const [email, setEmail] = useState( '' );
-  const [birthday, setBirthday] = useState( '1970-01-01' );
-  const [type, setType] = useState( 'password' );
-  const [word, setWord] = useState( 'Show' );
+const mapStateToProps = state => {
+  const { user, tglpw } = state;
+  return { user, tglpw };
+}
+
+function RegistrationView( props ) {
+  const { user, tglpw } = props;
 
   /* handles successful registration*/
   const handleRegister = ( e ) => {
@@ -26,17 +31,16 @@ export function RegistrationView( props ) {
       setTimeout( function () { container.removeChild( note ) }, 4000 );
       return false;
     } else {
-
       axios.post( 'https://myflix-kp.herokuapp.com/users', {
-        Username: username,
-        Password: password,
-        Email: email,
-        Birthday: birthday
+        Username: user.Username,
+        Password: user.Password,
+        Email: user.Email,
+        Birthday: user.Dob
       } )
         .then( response => {
           const data = response.data;
           console.log( data );
-          props.onRegistration( username );
+          localStorage.setItem( 'username', data.Username );
           window.open( '/', '_self' );
         } )
         .catch( e => {
@@ -120,24 +124,17 @@ export function RegistrationView( props ) {
     dobInput.onchange = validateDob;
   } );
 
-  /* handle an abortion of registration process*/
-  const swapView = ( e ) => {
-    e.preventDefault();
-    window.open( '/', '_self' );
-  }
-
   //toggle pw visibility
   const changeState = () => {
-    var oldState = type;
+    var oldState = tglpw.type;
     var isTextOrHide = ( oldState === 'password' );
     var newState = ( isTextOrHide ) ? 'text' : 'password';
     var newWord = ( isTextOrHide ) ? 'Hide' : 'Show';
-    setType( newState );
-    setWord( newWord );
+    props.togglePw( { type: newState, word: newWord } );
   }
 
   return (
-    <React.Fragment>
+    <Container fluid className="registration-view pb-5">
       <Row className="justify-content-center px-5">
         <Col className="">
           <h3 className="my-5">Register for myFlix</h3>
@@ -152,8 +149,8 @@ export function RegistrationView( props ) {
                       placeholder="Username"
                       name='username'
                       className="form-control-register"
-                      value={username}
-                      onChange={e => setUsername( e.target.value )}
+                      value={user.Username}
+                      onChange={e => props.setUser( { ...user, Username: e.target.value } )}
                     />
                   </Col>
                 </Form.Group>
@@ -161,14 +158,14 @@ export function RegistrationView( props ) {
                   <Form.Label column sm={2} md={3}>Password*</Form.Label>
                   <Col>
                     <Form.Control
-                      type={type}
-                      value={password}
+                      type={tglpw.type}
+                      value={user.Password}
                       placeholder="Password"
                       name="password"
                       className="form-control-register"
-                      onChange={e => setPassword( e.target.value )}
+                      onChange={e => props.setUser( { ...user, Password: e.target.value } )}
                     />
-                    <span className="password-trigger" onClick={changeState}>{word}</span>
+                    <span className="password-trigger" onClick={changeState}>{tglpw.word}</span>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="formEmail">
@@ -176,11 +173,11 @@ export function RegistrationView( props ) {
                   <Col>
                     <Form.Control
                       type="email"
-                      value={email}
+                      value={user.Email}
                       placeholder="Email"
                       name="email"
                       className="form-control-register"
-                      onChange={e => setEmail( e.target.value )}
+                      onChange={e => props.setUser( { ...user, Email: e.target.value } )}
                     />
                   </Col>
                 </Form.Group>
@@ -189,11 +186,11 @@ export function RegistrationView( props ) {
                   <Col>
                     <Form.Control
                       type="date"
-                      value={birthday}
+                      value={user.Dob}
                       placeholder="Birthday"
                       name="birthday"
                       className="form-control-register"
-                      onChange={e => setBirthday( e.target.value )}
+                      onChange={e => props.setUser( { ...user, Dob: e.target.value } )}
                     />
                   </Col>
                 </Form.Group>
@@ -206,12 +203,13 @@ export function RegistrationView( props ) {
                       type="submit">
                       Register
                     </Button>
-                    <Button
-                      variant="link"
-                      type="submit"
-                      onClick={swapView}>
-                      Abort
+                    <Link to='/'>
+                      <Button
+                        variant="link"
+                        type="button">
+                        Abort
                     </Button>
+                    </Link>
                   </Col>
                 </Row>
               </Form>
@@ -219,9 +217,23 @@ export function RegistrationView( props ) {
           </Row>
         </Col>
       </Row>
-    </React.Fragment>
+    </Container>
   )
 }
 
+export default connect( mapStateToProps, { setUser, togglePw } )( RegistrationView );
+
 RegistrationView.propTypes = {
+  setUser: PropTypes.func.isRequired,
+  user: PropTypes.shape( {
+    Username: PropTypes.string,
+    Password: PropTypes.string,
+    Email: PropTypes.string,
+    Dob: PropTypes.Date
+  } ),
+  tglpw: PropTypes.shape( {
+    type: PropTypes.string,
+    word: PropTypes.string
+  } ),
+  togglePw: PropTypes.func.isRequired
 };

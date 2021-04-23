@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Nav, Navbar, Container } from 'react-bootstrap';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { MovieCard } from '../movie-card/movie-card';
+import MovieCard from '../movie-card/movie-card';
 
 import arrow from '../../../public/img/arrow.svg';
 import logout from '../../../public/img/log-out.svg'
@@ -12,7 +12,6 @@ import './genre-view.scss';
 export class GenreView extends React.Component {
   constructor() {
     super();
-
     this.state = {};
   }
 
@@ -23,7 +22,7 @@ export class GenreView extends React.Component {
 
     if ( !movies ) return <div className="main-view" />;
     return (
-      <React.Fragment>
+      <Container fluid className="genre-view pb-5">
         <Navbar sticky="top" className="px-5 py-0 mb-2">
           <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
           <Nav className="ml-auto button-wrapper">
@@ -67,7 +66,7 @@ export class GenreView extends React.Component {
             </Col>
           </Row>
           <Row className="mb-5">
-            <Col md={8} className="description">
+            <Col className="description">
               {genre.Description}
             </Col>
           </Row>
@@ -87,7 +86,7 @@ export class GenreView extends React.Component {
             ) )}
           </Row>
         </Container>
-      </React.Fragment>
+      </Container>
     )
   }
 }
@@ -97,5 +96,6 @@ GenreView.propTypes = {
     Title: PropTypes.string.isRequired,
     Description: PropTypes.string.isRequired
   } ).isRequired,
+  movies: PropTypes.array,
   onClick: PropTypes.func.isRequired
 }

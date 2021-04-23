@@ -1,18 +1,22 @@
 import React from 'react';
 import axios from 'axios';
-import { Row, Col, Navbar, Nav, Button, Form } from 'react-bootstrap/';
+import PropTypes from 'prop-types';
+import { Row, Container, Navbar, Nav, Button } from 'react-bootstrap/';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { setMovies, setUser } from '../../actions/actions';
+import {
+  setMovies,
+  setUser
+} from '../../actions/actions';
 
 import MoviesList from '../movies-list/movies-list';
-import { RegistrationView } from '../registration-view/registration-view';
-import { LoginView } from '../login-view/login-view';
-import { MovieView } from '../movie-view/movie-view';
+import RegistrationView from '../registration-view/registration-view';
+import LoginView from '../login-view/login-view';
+import MovieView from '../movie-view/movie-view';
 import { GenreView } from '../genre-view/genre-view';
 import { DirectorView } from '../director-view/director-view';
-import { ProfileView } from '../profile-view/profile-view';
+import ProfileView from '../profile-view/profile-view';
 
 import logout from '../../../public/img/log-out.svg'
 import './main-view.scss';
@@ -21,31 +25,18 @@ class MainView extends React.Component {
   constructor() {
     super();
     // Inital state is set to null
-    this.state = {
-      movies: [],
-      user: {
-        username: null,
-        password: null,
-        email: null,
-        dob: null,
-        favoriteMovies: []
-      },
-      filter: "",
-      sorted: false
-    };
+    this.state = {};
   }
 
   componentDidMount() {
     let accessToken = localStorage.getItem( 'token' );
     if ( accessToken !== null ) {
-      this.setState( {
-        user: {
-          username: localStorage.getItem( 'username' ),
-          password: localStorage.getItem( 'password' ),
-          email: localStorage.getItem( 'email' ),
-          dob: localStorage.getItem( 'dob' ),
-          favoriteMovies: localStorage.getItem( 'favoriteMovies' )
-        }
+      this.props.setUser( {
+        Username: localStorage.getItem( 'username' ),
+        Password: localStorage.getItem( 'password' ),
+        Email: localStorage.getItem( 'email' ),
+        Dob: localStorage.getItem( 'dob' ),
+        FavoriteMovies: JSON.parse( localStorage.getItem( 'favoriteMovies' ) )
       } );
       this.getMovies( accessToken );
     }
@@ -55,7 +46,13 @@ class MainView extends React.Component {
   that *particular user**/
   onLoggedIn( authData ) {
     console.log( authData );
-    this.props.setUser( authData.user );
+    this.props.setUser( {
+      Username: authData.user.Username,
+      Password: authData.user.Password,
+      Email: authData.user.Email,
+      Dob: authData.user.Birthday,
+      FavoriteMovies: authData.user.FavoriteMovies
+    } );
 
     localStorage.setItem( 'favoriteMovies', JSON.stringify( authData.user.FavoriteMovies ) );
     localStorage.setItem( 'token', authData.token );
@@ -69,36 +66,9 @@ class MainView extends React.Component {
   //when user logs out its localStorage keys will be deleted
   onLogout() {
     localStorage.clear();
-    this.setState( {
-      user: {
-        username: null
-      }
-    } );
+    this.props.setUser( {} );
     window.open( '/', '_self' );
   }
-
-  onRegistration( uname ) {
-    this.setState( {
-      user: {
-        username: uname
-      }
-    } );
-    localStorage.setItem( 'username', uname );
-  }
-
-  onUpdate( data ) {
-    this.setState( {
-      user: {
-        username: data.Username,
-        password: data.Password,
-        email: data.Email,
-        dob: data.Birthday,
-        favoriteMovies: data.FavoriteMovies
-      }
-    } );
-    localStorage.setItem( 'username', this.state.user.username );
-    localStorage.setItem( 'password', this.state.user.password );
-  };
 
   getMovies( token ) {
     axios.get( 'https://myflix-kp.herokuapp.com/movies', {
@@ -121,52 +91,21 @@ class MainView extends React.Component {
     } );
   }
 
-  toggleSort() {
-    this.setState( ( currentState ) => ( {
-      sorted: !currentState.sorted
-    } ) );
-  }
-
   render() {
     const { movies, user } = this.props;
-    const { filter, sorted } = this.state;
-    // list of filtered movies non case-sensitive!
-    const movieFilter = movies.filter( movie => movie.Title.toLowerCase().includes( filter.toLowerCase() ) );
-    // sort functionality (alphabetically)
-    if ( sorted ) {
-      movieFilter.sort( function ( a, b ) {
-        var nameA = a.Title.toUpperCase();
-        var nameB = b.Title.toUpperCase();
-        if ( nameA < nameB ) {
-          return -1;
-        }
-        if ( nameA > nameB ) {
-          return 1;
-        }
-        return 0;
-      } );
-    }
-
+    let accessToken = localStorage.getItem( 'token' );
     /* If there is no user, the LoginView is rendered. If there is a logged in user,
     the user details are *passed as a prop to the LoginView**/
     return (
       <Router>
         <Route exact path={["/", "/login"]} render={() => {
-          if ( !user.Username ) return (
+          if ( !accessToken ) return (
             <LoginView onLoggedIn={data => this.onLoggedIn( data )} />
           );
           return (
-            <React.Fragment>
+            <Container fluid className="main-view pb-5">
               <Navbar sticky="top" className="px-5 py-0 mb-2">
                 <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
-                <Form inline>
-                  <Form.Control
-                    type="text"
-                    value={this.state.filter}
-                    placeholder="filter movies"
-                    className="mr-2"
-                    onChange={e => { this.setState( { filter: e.target.value } ) }} />
-                </Form>
                 <Nav className="ml-auto button-wrapper">
                   <Link to={'/users/me'}>
                     <Button
@@ -183,26 +122,14 @@ class MainView extends React.Component {
                   </Button>
                 </Nav>
               </Navbar>
-              <Row className="px-5 my-4">
-                <Col className="">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    onClick={() => this.toggleSort()}>
-                    Sort
-                  </Button>
-                </Col>
-              </Row>
               <Row className="px-5 py-3">
                 <MoviesList movies={movies} />
               </Row>
-            </React.Fragment>
+            </Container>
           );
         }} />
 
-        <Route exact path="/register" render={() => {
-          return <RegistrationView onRegistration={( username ) => this.onRegistration( username )} />;
-        }} />
+        <Route path="/register" component={RegistrationView} />
 
         <Route path="/movies/:movieId"
           render={( { match } ) => {
@@ -224,8 +151,8 @@ class MainView extends React.Component {
         <Route path="/users/me" render={( { match } ) => {
           return <ProfileView
             onLogout={() => this.onLogout()}
-            onUpdate={( data ) => this.onUpdate( data )}
             onMovieDel={() => this.onMovieDel()}
+            user={user}
             movies={movies} />
         }} />
 
@@ -245,3 +172,15 @@ let mapStateToProps = state => {
 }
 
 export default connect( mapStateToProps, { setMovies, setUser } )( MainView );
+
+MainView.propTypes = {
+  movies: PropTypes.array,
+  setMovies: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  user: PropTypes.shape( {
+    Username: PropTypes.string,
+    Password: PropTypes.string,
+    Email: PropTypes.string,
+    Dob: PropTypes.Date
+  } )
+}

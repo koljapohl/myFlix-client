@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Nav, Navbar, Container } from 'react-bootstrap';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { MovieCard } from '../movie-card/movie-card';
+import MovieCard from '../movie-card/movie-card';
 
 import arrow from '../../../public/img/arrow.svg';
 import logout from '../../../public/img/log-out.svg'
@@ -23,7 +23,7 @@ export class DirectorView extends React.Component {
 
     if ( !movies ) return <div className="main-view" />;
     return (
-      <React.Fragment>
+      <Container fluid className="director-view pb-5">
         <Navbar sticky="top" className="px-5 py-0 mb-2">
           <Navbar.Brand className="brand" href="/">myFlix</Navbar.Brand>
           <Nav className="ml-auto button-wrapper">
@@ -72,7 +72,7 @@ export class DirectorView extends React.Component {
             </Col>
           </Row>
           <Row className="mb-5">
-            <Col md={8} className="description">
+            <Col className="description">
               {movie.Director.Bio}
             </Col>
           </Row>
@@ -92,17 +92,28 @@ export class DirectorView extends React.Component {
             ) )}
           </Row>
         </Container>
-      </React.Fragment>
+      </Container>
     )
   }
 }
 
 DirectorView.propTypes = {
   movie: PropTypes.shape( {
+    ImagePath: PropTypes.string.isRequired,
+    Title: PropTypes.string.isRequired,
+    Description: PropTypes.string.isRequired,
+    Genre: PropTypes.shape( {
+      Title: PropTypes.string.isRequired,
+      Description: PropTypes.string
+    } ).isRequired,
     Director: PropTypes.shape( {
       Name: PropTypes.string.isRequired,
-      Bio: PropTypes.string.isRequired
-    } ).isRequired
-  } ).isRequired,
-  onClick: PropTypes.func.isRequired
+      Bio: PropTypes.string,
+      BirthYear: PropTypes.string
+    } ).isRequired,
+    Featured: PropTypes.bool,
+    _id: PropTypes.string,
+  } ),
+  onClick: PropTypes.func.isRequired,
+  movies: PropTypes.array.isRequired
 }
