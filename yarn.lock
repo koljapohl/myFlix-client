@@ -1119,7 +1119,7 @@
     "imurmurhash" "^0.1.4"
     "readable-stream" "1 || 2"
 
-"@parcel/fs@2.0.0-beta.2":
+"@parcel/fs@^2.0.0-alpha.3", "@parcel/fs@2.0.0-beta.2":
   "integrity" "sha512-/+3icntxOXvMSPZDfp/qhJkASY/eW+MX2/Sl5DBjP8CKR8GYBPBAVQvO2QZmBtEhIS/TGUFJ+Oo0ANrugteaoQ=="
   "resolved" "https://registry.npmjs.org/@parcel/fs/-/fs-2.0.0-beta.2.tgz"
   "version" "2.0.0-beta.2"
@@ -1288,6 +1288,13 @@
   "version" "2.0.0-beta.2"
   dependencies:
     "@parcel/plugin" "2.0.0-beta.2"
+
+"@parcel/plugin@^2.0.0-alpha.3":
+  "integrity" "sha512-2nfjd7ujL042gP7ssJ4JRyxEirp5Fuz+Vf4sk4aky3oWVuY9YmUqce0UNUMaIlh911xERo5uagy1jYOSa7gp6g=="
+  "resolved" "https://registry.npmjs.org/@parcel/plugin/-/plugin-2.0.0-alpha.3.tgz"
+  "version" "2.0.0-alpha.3"
+  dependencies:
+    "@parcel/types" "^2.0.0-alpha.3"
 
 "@parcel/plugin@2.0.0-beta.2":
   "integrity" "sha512-I89k7uc+yeSe6LrREajkvR6HnfcZzMDoz/TjnfG0W+iQYdKKaAuggf9zlQ6aOr8moGM1orcVSx5X+77u/tX0gg=="
@@ -1513,12 +1520,26 @@
     "react-refresh" "^0.9.0"
     "semver" "^5.4.1"
 
+"@parcel/transformer-sass@*":
+  "integrity" "sha512-Ow9PeVQPH5qTYmxXMx/5mhEYZTsnahWOv+jtDQ6Ar24iaOqlxKzenAcZvXh3VRo6KR8DnaUzOVrat3z+yV2JtA=="
+  "resolved" "https://registry.npmjs.org/@parcel/transformer-sass/-/transformer-sass-2.0.0-alpha.3.tgz"
+  "version" "2.0.0-alpha.3"
+  dependencies:
+    "@parcel/fs" "^2.0.0-alpha.3"
+    "@parcel/plugin" "^2.0.0-alpha.3"
+    "@parcel/utils" "^2.0.0-alpha.3"
+
+"@parcel/types@^2.0.0-alpha.3":
+  "integrity" "sha512-n4c346lpwhEUFJ3Xv4DUAATLnAqdKkNfEqFW+bfnS8WFBl3bUlaJW4JqHYQ63enoEvMKoD5Rs9/WrhqZ71X8Dg=="
+  "resolved" "https://registry.npmjs.org/@parcel/types/-/types-2.0.0-alpha.3.tgz"
+  "version" "2.0.0-alpha.3"
+
 "@parcel/types@2.0.0-beta.2":
   "integrity" "sha512-ri2BPGAFDntQbA5p3m/4QgnEqWYToUMkAtLelXSPbwnTM0KARavTAwSRqz1xwTdXa8gQyv4SSV7xURwaPaZ3GA=="
   "resolved" "https://registry.npmjs.org/@parcel/types/-/types-2.0.0-beta.2.tgz"
   "version" "2.0.0-beta.2"
 
-"@parcel/utils@2.0.0-beta.2":
+"@parcel/utils@^2.0.0-alpha.3", "@parcel/utils@2.0.0-beta.2":
   "integrity" "sha512-v8vFGdUY/IuuL7dvmdNxhv4TowgqYDxupToxEvMix1GePRx7QTV1ugy/uWgMXhNIytFo4qyo1fWD7VcXLMS1TQ=="
   "resolved" "https://registry.npmjs.org/@parcel/utils/-/utils-2.0.0-beta.2.tgz"
   "version" "2.0.0-beta.2"
